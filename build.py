@@ -361,10 +361,10 @@ def legacy(d):
 
 def about(d):
     # (name, role, photo file in assets/img or None). Add a headshot by dropping it in assets/img and naming it here.
-    board = [("Colin O&rsquo;Brien", "President", "board-colin-obrien.jpg"), ("Keely Selko", "Vice President", None), ("Mavia Lozano", "Treasurer", None), ("Roona Shah", "Secretary", None)]
+    board = [("Colin O&rsquo;Brien", "President", "board-colin-obrien.jpg"), ("Keely Selko", "Vice President", "board-keely-selko.jpg"), ("Mavia Lozano", "Treasurer", None), ("Roona Shah", "Secretary", "board-roona-shah.jpg")]
     def photo(n, f):
         if f:
-            return f'<img class="headshot" src="{rel(d, "assets/img/" + f)}" alt="{n.replace("&rsquo;", "\'")}" width="148" height="148" loading="lazy">'
+            return f'<img class="headshot" src="{rel(d, "assets/img/" + f)}" alt="{n.replace("&rsquo;", "\'")}" width="200" height="200" loading="lazy">'
         return f'<img class="headshot seal" src="{rel(d, "assets/img/lphs-seal.png")}" alt="" width="300" height="300" loading="lazy">'
     people = "".join(f'<li>{photo(n, f)}<div class="name">{n}</div><div class="role">{r}</div></li>' for n, r, f in board)
     return f'''
