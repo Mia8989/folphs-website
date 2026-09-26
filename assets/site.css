@@ -230,6 +230,8 @@ table.tiers{width:100%;border-collapse:collapse;min-width:720px;background:#fff;
 }
 @media (max-width:640px){
   body{font-size:17px}
+  .stat{min-width:0}
+  .stat.big .num{font-size:clamp(44px,15vw,72px)}
   section{padding:64px 0}
   .wrap{padding:0 16px}
   .legacy-hero{padding-top:56px}
