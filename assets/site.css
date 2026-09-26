@@ -260,3 +260,4 @@ table.tiers{width:100%;border-collapse:collapse;min-width:720px;background:#fff;
 .people .headshot{width:112px;height:112px;border-radius:50%;object-fit:cover;margin-bottom:20px;box-shadow:0 0 0 4px #fff,0 0 0 6px var(--gold)}
 .people .headshot.seal{object-fit:contain;background:#fff}
 @media (max-width:640px){.brand img{height:40px}.brand img.seal{height:46px}.brand{gap:10px}}
+[id]{scroll-margin-top:96px}
