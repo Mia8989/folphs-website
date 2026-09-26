@@ -73,7 +73,7 @@ section{padding:112px 0}
 .legacy-hero .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:64px;align-items:end}
 .legacy-hero .copy{padding-bottom:104px}
 .wordmark{font-family:var(--serif);font-weight:900;line-height:.92;letter-spacing:-.03em;margin:0 0 24px;color:#fff;font-size:clamp(56px,8.4vw,112px)}
-.wordmark .gold{display:block;background:linear-gradient(100deg,#B8862B 0%,#F4D58D 38%,#D6A546 62%,#F7DE9C 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wordmark .gold{display:block;padding-bottom:.16em;margin-bottom:-.16em;background:linear-gradient(100deg,#B8862B 0%,#F4D58D 38%,#D6A546 62%,#F7DE9C 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .wordmark .fund{display:flex;align-items:center;gap:16px;font:700 clamp(18px,2vw,24px)/1 var(--sans);letter-spacing:.42em;color:var(--gold-light);margin-top:16px;text-indent:.42em}
 .wordmark .fund::before,.wordmark .fund::after{content:"";height:2px;width:48px;background:var(--gold-deep)}
 .legacy-hero .tag{font:italic 500 clamp(24px,2.6vw,32px)/1.3 var(--serif);color:var(--gold-light);margin:0 0 16px}
