@@ -255,3 +255,5 @@ table.tiers{width:100%;border-collapse:collapse;min-width:720px;background:#fff;
 @media (max-width:1240px){.gold-band span{max-width:none;text-align:center}}
 .split.cal-split{grid-template-columns:1.7fr .8fr;gap:56px}
 @media (max-width:1240px){.split.cal-split{grid-template-columns:1fr}}
+.people .headshot{width:112px;height:112px;border-radius:50%;object-fit:cover;margin-bottom:20px;box-shadow:0 0 0 4px #fff,0 0 0 6px var(--gold)}
+.people .headshot.seal{object-fit:contain;background:#fff}

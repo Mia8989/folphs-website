@@ -360,9 +360,13 @@ def legacy(d):
 </section>'''
 
 def about(d):
-    board = [("Colin O&rsquo;Brien", "President"), ("Keely Selko", "Vice President"), ("Mavia Lozano", "Treasurer"), ("Roona Shah", "Secretary")]
-    initials = lambda n: "".join(w[0] for w in re.sub("&rsquo;", "", n).split()[:2])
-    people = "".join(f'<li><div class="mono" aria-hidden="true">{initials(n)}</div><div class="name">{n}</div><div class="role">{r}</div></li>' for n, r in board)
+    # (name, role, photo file in assets/img or None). Add a headshot by dropping it in assets/img and naming it here.
+    board = [("Colin O&rsquo;Brien", "President", "board-colin-obrien.jpg"), ("Keely Selko", "Vice President", None), ("Mavia Lozano", "Treasurer", None), ("Roona Shah", "Secretary", None)]
+    def photo(n, f):
+        if f:
+            return f'<img class="headshot" src="{rel(d, "assets/img/" + f)}" alt="{n.replace("&rsquo;", "\'")}" width="148" height="148" loading="lazy">'
+        return f'<img class="headshot seal" src="{rel(d, "assets/img/lphs-seal.png")}" alt="" width="300" height="300" loading="lazy">'
+    people = "".join(f'<li>{photo(n, f)}<div class="name">{n}</div><div class="role">{r}</div></li>' for n, r, f in board)
     return f'''
 <section class="page-hero"><div class="wrap"><span class="eyebrow" style="color:var(--gold-light)">About FOLPHS</span><h1>What we do</h1><p>Parents, volunteers and neighbors improving educational and cultural opportunities for all students at Lincoln Park High School.</p></div></section>
 <section aria-labelledby="mission-title">
@@ -455,7 +459,7 @@ def stay(d):
   <div>
    <span class="eyebrow">Attend our meetings</span>
    <h2 id="meet-title">New time: the 2nd Tuesday of every month</h2>
-   <p>FOLPHS meetings are held on the <strong>2nd Tuesday of every month at 6:00 pm at LPHS</strong>. All are welcome, and it&rsquo;s never too early to get involved.</p>
+   <p>FOLPHS meetings are held on the <strong>2nd Tuesday of every month at 6:00 pm at LPHS</strong>. All are welcome, and it&rsquo;s never too early to get involved. Look for meeting information in your email.</p>
    <p>Can&rsquo;t make it but still want to help? <a href="{rel(d, 'get-involved/')}">See how to get involved</a>.</p>
    <div class="cta-row"><a class="btn btn-navy" href="{rel(d, 'events/')}">See the 2026-27 calendar</a><a class="btn btn-ghost" href="{rel(d, 'meeting-minutes/')}">Read meeting minutes</a></div>
   </div>
@@ -499,7 +503,26 @@ def give(d):
   <div class="figure plain">{img(d, 'legacy-fund-header.webp', 'Lions Legacy Fund: invest in a stronger LPHS for generations of Lions', 1280, 281)}</div>
  </div>
 </section>
-<section class="band-cream" id="zelle" aria-labelledby="zelle-title">
+<section class="band-cream" id="why" aria-labelledby="why-title">
+ <div class="wrap split">
+  <div>
+   <span class="eyebrow">Why should I give?</span>
+   <h2 id="why-title">The funding gap is real</h2>
+  </div>
+  <div>
+   <p>All CPS schools, including LPHS, are significantly underfunded. LPHS actually receives less per student than the average CPS school, because our student demographics don&rsquo;t qualify us for federal grants. Almost 100% of the LPHS budget goes to our amazing personnel, which leaves little for other critical parts of the high school experience, such as:</p>
+   <ul class="checks">
+    <li>Classroom technology and Chromebooks for every student</li>
+    <li>Gym and weight room equipment</li>
+    <li>Senior graduation activities and buses for college visits</li>
+    <li>Faculty professional development and staff appreciation</li>
+    <li>Textbooks, novel collections, music and science classroom supplies</li>
+   </ul>
+   <p>We&rsquo;re counting on your support to fund these needs and keep LPHS&rsquo; culture of excellence going.</p>
+  </div>
+ </div>
+</section>
+<section id="zelle" aria-labelledby="zelle-title">
  <div class="wrap split">
   <div>
    <span class="eyebrow">No card fees</span>
@@ -510,7 +533,7 @@ def give(d):
   <div class="figure" style="max-width:420px">{img(d, 'zelle-qr.webp', 'Zelle QR code to pay Friends of Lincoln Park High School', 700, 607)}</div>
  </div>
 </section>
-<section id="marquee" aria-labelledby="marquee-title">
+<section class="band-cream" id="marquee" aria-labelledby="marquee-title">
  <div class="wrap split rev">
   <div class="figure">{img(d, 'marquee.webp', 'The LPHS marquee sign on Armitage showing a personalized congratulations message', 1200, 900)}</div>
   <div>
@@ -523,7 +546,7 @@ def give(d):
   </div>
  </div>
 </section>
-<section class="band-cream" id="raise-right" aria-labelledby="rr-title">
+<section id="raise-right" aria-labelledby="rr-title">
  <div class="wrap split">
   <div>
    <span class="eyebrow">Shop and support</span>
@@ -544,7 +567,7 @@ def give(d):
   </div>
  </div>
 </section>
-<section id="spirit-wear" aria-labelledby="sw-title">
+<section class="band-cream" id="spirit-wear" aria-labelledby="sw-title">
  <div class="wrap split rev">
   <div class="figure plain" style="max-width:460px">{img(d, 'spirit-wear.webp', 'LPHS spirit wear: hoodies, t-shirts, sweatpants and shorts', 636, 741)}</div>
   <div>
@@ -557,7 +580,7 @@ def give(d):
   </div>
  </div>
 </section>
-<section class="band-cream" id="library" aria-labelledby="lib-title">
+<section id="library" aria-labelledby="lib-title">
  <div class="wrap split">
   <div>
    <span class="eyebrow">The LPHS library</span>
