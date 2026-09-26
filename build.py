@@ -663,12 +663,7 @@ def past(d):
   <div><span class="eyebrow">2025 Spring Gala</span><h2 id="gala25-title">A Walk in the Park</h2><p>Our 2025 Spring Gala at the Floating World Gallery brought families, staff and neighbors together for an evening of celebration, entertainment and community.</p></div>
  </div>
 </section>
-<section class="band-cream" id="soiree-2024" aria-labelledby="s24-title">
- <div class="wrap split">
-  <div><span class="eyebrow">April 20, 2024 at Galleria Marchetti</span><h2 id="s24-title">Our Future Blooms Spring Soiree</h2><p>An evening of food, entertainment, a raffle and a paddle raise to support LPHS.</p></div>
-  <div class="figure" style="max-width:360px">{img(d, 'soiree-2024.webp', 'Our Future Blooms Spring Soiree fundraiser logo, April 20, 2024 at Galleria Marchetti', 500, 500)}</div>
- </div>
-</section>'''
+'''
 
 NOT_FOUND = lambda d: f'''<section class="page-hero"><div class="wrap"><span class="eyebrow" style="color:var(--gold-light)">Page not found</span><h1>This page moved</h1><p>We refreshed the FOLPHS website. Try the links below.</p><div class="cta-row"><a class="btn btn-gold" href="./">Home</a><a class="btn btn-ghost" href="legacy-fund/">Lions Legacy Fund</a></div></div></section>'''
 
@@ -684,7 +679,7 @@ REDIRECTS = {
     "volunteer/current-volunteer-opportunities": "get-involved/", "copy-of-2026-fundraising-gala": "past-events/#gala-2026",
     "copy-of-2026-fundraising-gala-1": "past-events/#gala-2026", "copy-of-marquee-messages": "past-events/#gala-2026",
     "copy-of-folphs-fundraising-gala-2025": "past-events/#gala-2026", "folphs-fundraising-gala-2025": "past-events/#gala-2025",
-    "2024-spring-soiree-fundraiser": "past-events/#soiree-2024", "blank": "past-events/#giving-2025", "lphs-cameo-celebrity-list": "past-events/",
+    "2024-spring-soiree-fundraiser": "past-events/", "blank": "past-events/#giving-2025", "lphs-cameo-celebrity-list": "past-events/",
 }
 
 def redirect_stub(old, new):
