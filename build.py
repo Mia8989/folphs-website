@@ -69,7 +69,7 @@ def header(depth, current):
             items.append(f'<li><a href="{rel(depth, href)}"{cur}>{label}</a></li>')
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="wrap">
-<a class="brand" href="{rel(depth, '')}" aria-label="Friends of Lincoln Park High School, home"><img src="{rel(depth, 'assets/img/folphs-logo.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="322"></a>
+<a class="brand" href="{rel(depth, '')}" aria-label="Friends of Lincoln Park High School, home"><img class="seal" src="{rel(depth, 'assets/img/lincoln-park-high-school-seal.png')}" alt="Lincoln Park High School seal" width="400" height="400"><img src="{rel(depth, 'assets/img/friends-of-lincoln-park-high-school-logo.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="322"></a>
 <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
 <nav class="nav" id="site-nav" aria-label="Main"><ul>{"".join(items)}</ul>
 <a class="btn btn-gold" href="{donate_href(depth)}">Donate</a></nav>
@@ -79,7 +79,7 @@ def footer(depth):
     r = lambda p: rel(depth, p)
     return f'''<footer class="site-footer"><div class="wrap">
 <div class="cols">
-<div><img class="logo" src="{r('assets/img/folphs-logo-white.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="306">
+<div><img class="logo" src="{r('assets/img/friends-of-lincoln-park-high-school-logo-white.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="306">
 <p>A parent-run, volunteer organization supporting every student at Lincoln Park High School in Chicago.</p>
 <p><a href="mailto:{EMAIL}">{EMAIL}</a></p></div>
 <div><h2>Give</h2><ul><li><a href="{r('legacy-fund/')}">Lions Legacy Fund</a></li><li><a href="{r('ways-to-give/')}">Ways to Give</a></li><li><a href="{r('sponsors/')}">Become a Sponsor</a></li></ul></div>
@@ -96,7 +96,7 @@ n.querySelectorAll('a').forEach(function(a){{a.addEventListener('click',function
 }})();
 </script>'''
 
-def page(slug, title, desc, body, current=None, og_img="assets/img/legacy-fund-header.webp", out_file=None):
+def page(slug, title, desc, body, current=None, og_img="assets/img/folphs-lions-legacy-fund-share.jpg", out_file=None):
     depth = 0 if out_file else slug.count("/") + (1 if slug else 0)
     canonical = f"{SITE_URL}/{slug}".rstrip("/") if slug else SITE_URL
     html = f'''<!doctype html>
@@ -107,12 +107,12 @@ def page(slug, title, desc, body, current=None, og_img="assets/img/legacy-fund-h
 <link rel="canonical" href="{canonical}">
 <meta property="og:title" content="{title}"><meta property="og:description" content="{desc}">
 <meta property="og:type" content="website"><meta property="og:url" content="{canonical}">
-<meta property="og:image" content="{SITE_URL}/{og_img}"><meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="{rel(depth, 'assets/img/folphs-lion.png')}">
+<meta property="og:image" content="{SITE_URL}/{og_img}"><meta property="og:image:alt" content="{title}"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="{rel(depth, 'assets/img/folphs-lion-icon.png')}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Oswald:wght@500&family=Playfair+Display:ital,wght@0,900;1,500;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{rel(depth, 'assets/site.css')}">
-<script type="application/ld+json">{json.dumps({"@context":"https://schema.org","@type":"NGO","name":"Friends of Lincoln Park High School","alternateName":"FOLPHS","url":SITE_URL,"email":EMAIL,"logo":SITE_URL+"/assets/img/folphs-logo.png","sameAs":[INSTAGRAM,FB_PAGE],"address":{"@type":"PostalAddress","addressLocality":"Chicago","addressRegion":"IL","addressCountry":"US"}})}</script>
+<script type="application/ld+json">{json.dumps({"@context":"https://schema.org","@type":"NGO","name":"Friends of Lincoln Park High School","alternateName":"FOLPHS","url":SITE_URL,"email":EMAIL,"logo":SITE_URL+"/assets/img/friends-of-lincoln-park-high-school-logo.png","sameAs":[INSTAGRAM,FB_PAGE],"address":{"@type":"PostalAddress","addressLocality":"Chicago","addressRegion":"IL","addressCountry":"US"}})}</script>
 </head><body>
 {header(depth, current)}
 <main id="main">
@@ -182,7 +182,7 @@ def home(d):
     <a class="btn btn-ghost" href="{rel(d, 'legacy-fund/')}">See what we&rsquo;re funding</a>
    </div>
   </div>
-  <a class="flyer-card" href="{rel(d, 'legacy-fund/')}" aria-label="Lions Legacy Fund campaign flyer">{img(d, 'legacy-fund-flyer.webp', 'Lions Legacy Fund flyer: Invest in the Pride, 2026-27 goals are new Chromebooks, health and fitness, student scholarships and staff spaces', 1000, 1470, lazy=False)}</a>
+  <a class="flyer-card" href="{rel(d, 'legacy-fund/')}" aria-label="Lions Legacy Fund campaign flyer">{img(d, 'lions-legacy-fund-2026-27-flyer.webp', 'Lions Legacy Fund flyer: Invest in the Pride, 2026-27 goals are new Chromebooks, health and fitness, student scholarships and staff spaces', 1000, 1470, lazy=False)}</a>
  </div>
 </section>
 <div class="gold-band"><div class="wrap"><span>Invest in a stronger LPHS for generations of Lions</span></div></div>
@@ -220,7 +220,7 @@ def home(d):
 
 <section aria-labelledby="sponsor-title">
  <div class="wrap split rev">
-  <div class="figure plain">{img(d, 'sponsor-tiers-2026.webp', '2026-27 FOLPHS business sponsorship chart with three levels: Leader of the Pack $5,000+, Member of the Pride $2,000+, Roar of the Lion $1,000+', 1400, 1030)}</div>
+  <div class="figure plain">{img(d, 'folphs-2026-27-business-sponsorship-levels.webp', '2026-27 FOLPHS business sponsorship chart with three levels: Leader of the Pack $5,000+, Member of the Pride $2,000+, Roar of the Lion $1,000+', 1400, 1030)}</div>
   <div>
    <span class="eyebrow">For local businesses</span>
    <h2 id="sponsor-title">Put your logo in lights on Armitage</h2>
@@ -271,7 +271,7 @@ def legacy(d):
    <p>The Lions Legacy Fund is the 2026-27 annual giving campaign from Friends of Lincoln Park High School. It runs through the end of December.</p>
    <div class="cta-row"><a class="btn btn-gold" href="{donate_href(d)}">Give now</a><a class="btn btn-ghost" href="#sponsor">Sponsor as a business</a></div>
   </div>
-  <div class="flyer-card">{img(d, 'legacy-fund-flyer.webp', 'Lions Legacy Fund flyer: Invest in the Pride, 2026-27 goals are new Chromebooks, health and fitness, student scholarships and staff spaces', 1000, 1470, lazy=False)}</div>
+  <div class="flyer-card">{img(d, 'lions-legacy-fund-2026-27-flyer.webp', 'Lions Legacy Fund flyer: Invest in the Pride, 2026-27 goals are new Chromebooks, health and fitness, student scholarships and staff spaces', 1000, 1470, lazy=False)}</div>
  </div>
 </section>
 <div class="gold-band"><div class="wrap"><span>A stronger LPHS for generations of Lions</span></div></div>
@@ -314,7 +314,7 @@ def legacy(d):
 
 <section aria-labelledby="impact-title">
  <div class="wrap split">
-  <div class="figure">{img(d, 'successes-2025-26.webp', 'Shining a light on our successes: together we raised over $150,000 in 2025-26, including a fully funded $50,000 computer lab with 31 computers, 2 printers and 9 kits', 1100, 1105)}</div>
+  <div class="figure">{img(d, 'folphs-2025-26-fundraising-results.webp', 'Shining a light on our successes: together we raised over $150,000 in 2025-26, including a fully funded $50,000 computer lab with 31 computers, 2 printers and 9 kits', 1100, 1105)}</div>
   <div>
    <span class="eyebrow">Last year&rsquo;s results</span>
    <h2 id="impact-title">Over $150,000 raised for LPHS</h2>
@@ -361,11 +361,11 @@ def legacy(d):
 
 def about(d):
     # (name, role, photo file in assets/img or None). Add a headshot by dropping it in assets/img and naming it here.
-    board = [("Colin O&rsquo;Brien", "President", "board-colin-obrien.jpg"), ("Keely Selko", "Vice President", "board-keely-selko.jpg"), ("Mavia Lozano", "Treasurer", None), ("Roona Shah", "Secretary", "board-roona-shah.jpg")]
+    board = [("Colin O&rsquo;Brien", "President", "folphs-board-colin-obrien.jpg"), ("Keely Selko", "Vice President", "folphs-board-keely-selko.jpg"), ("Mavia Lozano", "Treasurer", None), ("Roona Shah", "Secretary", "folphs-board-roona-shah.jpg")]
     def photo(n, f):
         if f:
             return f'<img class="headshot" src="{rel(d, "assets/img/" + f)}" alt="{n.replace("&rsquo;", "\'")}" width="200" height="200" loading="lazy">'
-        return f'<img class="headshot seal" src="{rel(d, "assets/img/lphs-seal.png")}" alt="" width="300" height="300" loading="lazy">'
+        return f'<img class="headshot seal" src="{rel(d, "assets/img/lincoln-park-high-school-seal.png")}" alt="Lincoln Park High School seal, photo of {n.replace("&rsquo;", "\'")} coming soon" width="400" height="400" loading="lazy">'
     people = "".join(f'<li>{photo(n, f)}<div class="name">{n}</div><div class="role">{r}</div></li>' for n, r, f in board)
     return f'''
 <section class="page-hero"><div class="wrap"><span class="eyebrow" style="color:var(--gold-light)">About FOLPHS</span><h1>What we do</h1><p>Parents, volunteers and neighbors improving educational and cultural opportunities for all students at Lincoln Park High School.</p></div></section>
@@ -419,14 +419,14 @@ def events(d):
    <div class="callout"><p><strong>Be on the lookout for:</strong> Winter Formal in January, ACT Testing in February, the Spring Gala in April and Prom in May.</p></div>
   </div>
   <div>
-   <div class="figure">{img(d, 'calendar-2026-27.webp', '2026-2027 LPHS school year calendar magnet with key dates and FOLPHS meetings on the 2nd Tuesday of every month', 900, 1350)}</div>
-   <p class="caption">The 2026-27 calendar magnet. <a href="{rel(d, 'assets/img/calendar-2026-27.webp')}">Open full size</a></p>
+   <div class="figure">{img(d, 'lphs-2026-27-school-year-calendar.webp', '2026-2027 LPHS school year calendar magnet with key dates and FOLPHS meetings on the 2nd Tuesday of every month', 900, 1350)}</div>
+   <p class="caption">The 2026-27 calendar magnet. <a href="{rel(d, 'assets/img/lphs-2026-27-school-year-calendar.webp')}">Open full size</a></p>
   </div>
  </div>
 </section>
 <section class="band-cream" id="coffee" aria-labelledby="coffee-title">
  <div class="wrap split rev">
-  <div class="figure">{img(d, 'coffee-with-the-principal.webp', 'Coffee with the Principal: sign up to have coffee with Dr. Steinmiller', 900, 900)}</div>
+  <div class="figure">{img(d, 'lphs-coffee-with-the-principal.webp', 'Coffee with the Principal: sign up to have coffee with Dr. Steinmiller', 900, 900)}</div>
   <div>
    <span class="eyebrow">Monthly coffee</span>
    <h2 id="coffee-title">Coffee with the Principal</h2>
@@ -455,7 +455,7 @@ def stay(d):
 </section>
 <section class="band-cream" id="meetings" aria-labelledby="meet-title">
  <div class="wrap split rev">
-  <div class="figure">{img(d, 'meetings-2nd-tuesday.webp', 'FOLPHS is moving to a new time: please join us on the 2nd Tuesday of every month at 6pm at LPHS', 900, 1125)}</div>
+  <div class="figure">{img(d, 'folphs-meetings-2nd-tuesday-6pm.webp', 'FOLPHS is moving to a new time: please join us on the 2nd Tuesday of every month at 6pm at LPHS', 900, 1125)}</div>
   <div>
    <span class="eyebrow">Attend our meetings</span>
    <h2 id="meet-title">New time: the 2nd Tuesday of every month</h2>
@@ -500,7 +500,7 @@ def give(d):
    <p>Our 2026-27 annual giving campaign funds new Chromebooks, fitness equipment, student scholarships and better spaces for staff and students.</p>
    <div class="cta-row"><a class="btn btn-gold" href="{donate_href(d)}">Give to the Legacy Fund</a></div>
   </div>
-  <div class="figure plain">{img(d, 'legacy-fund-header.webp', 'Lions Legacy Fund: invest in a stronger LPHS for generations of Lions', 1280, 281)}</div>
+  <div class="figure plain">{img(d, 'lions-legacy-fund-2026-27-header.webp', 'Lions Legacy Fund: invest in a stronger LPHS for generations of Lions', 1280, 281)}</div>
  </div>
 </section>
 <section class="band-cream" id="why" aria-labelledby="why-title">
@@ -530,12 +530,12 @@ def give(d):
    <p>Prefer not to use a credit card? We&rsquo;d love that too, since it saves us the 3% fee. Scan the QR code in your banking app or find us at <strong>{EMAIL}</strong>.</p>
    <div class="callout"><p>Please add a note in the memo that tells us what you&rsquo;re giving toward (for example Legacy Fund, Marquee or Business Sponsorship) and include your email. We can&rsquo;t contact you otherwise.</p></div>
   </div>
-  <div class="figure" style="max-width:420px">{img(d, 'zelle-qr.webp', 'Zelle QR code to pay Friends of Lincoln Park High School', 700, 607)}</div>
+  <div class="figure" style="max-width:420px">{img(d, 'folphs-zelle-donation-qr-code.webp', 'Zelle QR code to pay Friends of Lincoln Park High School', 700, 607)}</div>
  </div>
 </section>
 <section class="band-cream" id="marquee" aria-labelledby="marquee-title">
  <div class="wrap split rev">
-  <div class="figure">{img(d, 'marquee.webp', 'The LPHS marquee sign on Armitage showing a personalized congratulations message', 1200, 900)}</div>
+  <div class="figure">{img(d, 'lphs-marquee-sign-armitage.webp', 'The LPHS marquee sign on Armitage showing a personalized congratulations message', 1200, 900)}</div>
   <div>
    <span class="eyebrow">$50 donation</span>
    <h2 id="marquee-title">Put a name in lights on the marquee</h2>
@@ -569,7 +569,7 @@ def give(d):
 </section>
 <section class="band-cream" id="spirit-wear" aria-labelledby="sw-title">
  <div class="wrap split rev">
-  <div class="figure plain" style="max-width:460px">{img(d, 'spirit-wear.webp', 'LPHS spirit wear: hoodies, t-shirts, sweatpants and shorts', 636, 741)}</div>
+  <div class="figure plain" style="max-width:460px">{img(d, 'lphs-spirit-wear.webp', 'LPHS spirit wear: hoodies, t-shirts, sweatpants and shorts', 636, 741)}</div>
   <div>
    <span class="eyebrow">Show your Lions pride</span>
    <h2 id="sw-title">Shop spirit wear</h2>
@@ -588,7 +588,7 @@ def give(d):
    <p>The LPHS library receives no CPS funds for new books, so our community fills the gap. Thanks to your generosity the library has already added 175 new books. Based on student requests, librarian Ms. Giannopoulos keeps a wish list of titles the library is missing.</p>
    <div class="cta-row"><a class="btn btn-navy" href="{LIBRARY_WISHLIST}">See the library wish list</a></div>
   </div>
-  <div class="figure">{img(d, 'library-books.webp', 'A tall stack of library books', 1000, 666)}</div>
+  <div class="figure">{img(d, 'lphs-library-book-drive.webp', 'A tall stack of library books', 1000, 666)}</div>
  </div>
 </section>'''
 
@@ -613,7 +613,7 @@ def sponsors(d):
   {tiers_table()}
   <div class="split" style="margin-top:64px">
    <div><h3>Ready to join the Pride?</h3><p>Email us today and we&rsquo;ll find the right level for your business.</p><div class="cta-row"><a class="btn btn-navy" href="mailto:{EMAIL}?subject=FOLPHS%20business%20sponsorship">Email {EMAIL}</a></div></div>
-   <div class="figure plain">{img(d, 'sponsor-tiers-2026.webp', '2026-27 FOLPHS sponsorship chart: Leader of the Pack $5,000+, Member of the Pride $2,000+, Roar of the Lion $1,000+', 1400, 1030)}<p class="caption" style="padding:0 16px 12px">Download-ready chart to share with your team.</p></div>
+   <div class="figure plain">{img(d, 'folphs-2026-27-business-sponsorship-levels.webp', '2026-27 FOLPHS sponsorship chart: Leader of the Pack $5,000+, Member of the Pride $2,000+, Roar of the Lion $1,000+', 1400, 1030)}<p class="caption" style="padding:0 16px 12px">Download-ready chart to share with your team.</p></div>
   </div>
  </div>
 </section>
@@ -658,13 +658,13 @@ def past(d):
  <div class="wrap">
   <span class="eyebrow">2025 Annual Giving Campaign</span>
   <h2 id="g25-title">Shine Together: over $150,000 raised</h2>
-  <div class="figure plain" style="margin:32px 0">{img(d, 'shine-together-header.webp', 'Shine Together, the 2025 FOLPHS annual giving campaign', 1280, 364)}</div>
+  <div class="figure plain" style="margin:32px 0">{img(d, 'folphs-2025-shine-together-campaign.webp', 'Shine Together, the 2025 FOLPHS annual giving campaign', 1280, 364)}</div>
   <div class="split">
-   <div class="figure">{img(d, 'successes-2025-26.webp', 'Shining a light on our successes: over $150,000 raised to enhance educational experiences at LPHS', 1100, 1105)}</div>
+   <div class="figure">{img(d, 'folphs-2025-26-fundraising-results.webp', 'Shining a light on our successes: over $150,000 raised to enhance educational experiences at LPHS', 1100, 1105)}</div>
    <div>
     <h3>Thank you to our donor families</h3>
     <p>LP Lions loyalty showed up in every grade and at every gift size. Thank you to every family who gave.</p>
-    <div class="figure plain">{img(d, 'donor-families-2025-26.webp', 'List of 2025-26 donor families who supported the annual giving campaign', 1280, 1447)}</div>
+    <div class="figure plain">{img(d, 'folphs-2025-26-donor-families.webp', 'List of 2025-26 donor families who supported the annual giving campaign', 1280, 1447)}</div>
    </div>
   </div>
  </div>
@@ -677,12 +677,12 @@ def past(d):
    <p>A fun, no-tie-required evening supporting our students, with an online auction of experiences and gift cards from beloved local spots. Proceeds supported performing arts upgrades, teacher development, books and college prep, and facility improvements.</p>
    <p>Thank you to event sponsor Berman Auto Group and to everyone who attended and bid.</p>
   </div>
-  <div class="figure" style="max-width:480px">{img(d, 'gala-2026-thank-you.webp', 'Blue and Gold Fundraising Gala thank-you note with auction item pickup details and event photos', 1000, 1294)}</div>
+  <div class="figure" style="max-width:480px">{img(d, 'folphs-2026-blue-gold-gala-thank-you.webp', 'Blue and Gold Fundraising Gala thank-you note with auction item pickup details and event photos', 1000, 1294)}</div>
  </div>
 </section>
 <section id="gala-2025" aria-labelledby="gala25-title">
  <div class="wrap split rev">
-  <div class="figure">{img(d, 'gala-2025.webp', 'A Walk in the Park fundraising gala, April 26 at the Floating World Gallery, celebrating 150 years of LPHS', 1200, 927)}</div>
+  <div class="figure">{img(d, 'folphs-2025-walk-in-the-park-gala.webp', 'A Walk in the Park fundraising gala, April 26 at the Floating World Gallery, celebrating 150 years of LPHS', 1200, 927)}</div>
   <div><span class="eyebrow">2025 Spring Gala</span><h2 id="gala25-title">A Walk in the Park</h2><p>Our 2025 Spring Gala at the Floating World Gallery brought families, staff and neighbors together for an evening of celebration, entertainment and community.</p></div>
  </div>
 </section>
@@ -728,6 +728,13 @@ if __name__ == "__main__":
         if new is not None:
             redirect_stub(old, new)
     urls = ["", "legacy-fund", "about", "events", "stay-in-touch", "meeting-minutes", "ways-to-give", "sponsors", "get-involved", "past-events"]
-    (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<url><loc>{SITE_URL}/{u}</loc></url>" for u in urls) + "</urlset>\n")
+    def page_images(u):
+        html = (ROOT / u / "index.html").read_text() if u else (ROOT / "index.html").read_text()
+        return sorted(set(re.findall(r'assets/img/([\w/.-]+\.(?:webp|png|jpg))', html)))
+    entries = []
+    for u in urls:
+        imgs = "".join(f"<image:image><image:loc>{SITE_URL}/assets/img/{i}</image:loc></image:image>" for i in page_images(u))
+        entries.append(f"<url><loc>{SITE_URL}/{u}</loc>{imgs}</url>")
+    (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' + "".join(entries) + "</urlset>\n")
     (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n")
     print("built")
