@@ -13,7 +13,7 @@ ROOT = pathlib.Path(__file__).parent
 # ---------------------------------------------------------------- settings
 EMAIL = "folphs@gmail.com"
 INSTAGRAM = "https://www.instagram.com/lphschicago/"
-FB_PAGE = "https://www.facebook.com/FOLPChicago"
+FB_PAGE = "https://www.facebook.com/people/Friends-of-Lincoln-Park-High-School/61586578040811/"
 FB_PARENTS_GROUP = "https://www.facebook.com/groups/2832926726795889/"
 COFFEE_SIGNUP = "https://www.signupgenius.com/go/20F0D4DABA72BABF85-57854378-coffee#/"
 VOLUNTEER_FORM = "https://tinyurl.com/FOLPHS-Volunteer-Interest-Form"
