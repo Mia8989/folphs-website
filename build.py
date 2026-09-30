@@ -26,7 +26,7 @@ TRIBUNE = "https://www.chicagotribune.com/2026/06/22/cps-budget-problems-school-
 TAX_ID = "E99474484"
 SITE_URL = "https://www.folphs.org"
 # Path the site is served from. "/folphs-website/" on GitHub Pages preview; change to "/" once folphs.org points here.
-SITE_BASE = "/folphs-website/"
+SITE_BASE = "/"
 
 # Online donation link for the Legacy Fund (Keely is creating it).
 # Leave as None until it arrives: buttons then point to the Ways to Give section.
