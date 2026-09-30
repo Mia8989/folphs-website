@@ -24,7 +24,7 @@ RAISE_RIGHT_CODE = "G9BASLZ6VWIN"
 LIBRARY_WISHLIST = "https://r20.rs6.net/tn.jsp?f=0018LaIUc4j_zHDc_KpnaaF9YY_IR_bkQeAwWqzXrxKsWWqGLdiq3C3wsxVgO-Lwlt297EsT4KserWTY-ClMrl0Gl0GMed9q8Ki6smSaIiNX0SYBpte50hGKivSFVp6sauwtDrPd1lwXEUjxg3rE8-ZKTHBzKbCciiPukrNq3AhX5ZH57WfWvz4rsMmfaAE5dG4EC6nqiAmrwWthIJfLrtrVA==&c=QocJfDCmcT671qFqXg1FQmEeD0e2zlIxWJOCSK6RO7DrDX7xicDUgg==&ch=et-egfdEIZpUalm6v60sq7AqiP8ME1RSloLmhf74OkHKRRoRKl2ZIg=="
 TRIBUNE = "https://www.chicagotribune.com/2026/06/22/cps-budget-problems-school-fundraising/"
 TAX_ID = "E99474484"
-SITE_URL = "https://www.folphs.org"
+SITE_URL = "https://folphs.org"
 # Path the site is served from. "/folphs-website/" on GitHub Pages preview; change to "/" once folphs.org points here.
 SITE_BASE = "/"
 
