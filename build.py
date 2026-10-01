@@ -55,7 +55,8 @@ IG_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-widt
 FB_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5H16l.5-3h-3V8.6c0-.9.3-1.6 1.6-1.6h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.3H8v3h2.5V21h3z"/></svg>'
 
 def donate_href(depth):
-    return DONATE_URL or rel(depth, "legacy-fund/#give")
+    # Roona: the online link is one way to pay; Zelle and check are listed too.
+    return rel(depth, "legacy-fund/#give")
 
 def header(depth, current):
     items = []
@@ -276,25 +277,55 @@ def legacy(d):
 </section>
 <div class="gold-band"><div class="wrap"><span>A stronger LPHS for generations of Lions</span></div></div>
 
-<section class="after-hero" id="give" aria-labelledby="give-title">
+<section class="after-hero" aria-labelledby="letter-title">
+ <div class="wrap">
+  <span class="eyebrow">A letter to our neighbors</span>
+  <h2 id="letter-title">Why we&rsquo;re asking</h2>
+  <div class="letter">
+   <p>Dear Future Sponsor, I am personally asking you to invest in us.</p>
+   <p><strong>Lincoln Park High School, ranked in the top 3% by US News&rsquo; list of Best U.S. High Schools, is the hub for academic consistency, creativity &amp; community!</strong> We represent nearly 2,200 students from all city zip codes, 93% are college-bound, 86%+ enroll in AP courses, plus plenty of participation in over 60 clubs &amp; more than 25 sports.</p>
+   <p><strong>Thanks to our community, last year&rsquo;s fall fundraiser was a success: we raised about $150,000</strong> to build a new computer lab (equipped with 3-D printers), amplify our auditorium with a new speaker, and send teachers to training. But there is so much more to do, now!</p>
+   <p>As a local, neighborhood business, your financial support is not only a chance to assist us, but is also a unique opportunity to gain goodwill with widespread recognition, both within &amp; around our school community; <strong>we&rsquo;ll provide prime advertising on Armitage St. as well as social media recognition, so that together, we can achieve all these goals:</strong></p>
+   <ul class="checks">
+    <li>Update exercise equipment to support student stamina &amp; wellness</li>
+    <li>Replace laptops to maintain the 1:1 ratio of Chromebooks for every student</li>
+    <li>Contribute to student scholarships for academic endeavors &amp; national competitions</li>
+    <li>Protect music &amp; drama department items with weather-safe storage</li>
+    <li>Construct a deserving space for social workers to counsel students</li>
+   </ul>
+   <p>Since CPS is always in flux, <strong>your investment equals 6% of LPHS&rsquo; budget, and is essential to enriching our experiences!</strong> (See: <a href="{TRIBUNE}">Chicago Tribune</a>.) It&rsquo;s easy to give, here&rsquo;s how:</p>
+   <ul class="checks">
+    <li><strong>Credit Card:</strong> donate through our <a href="{DONATE_URL}">online link</a> (quick &amp; convenient!)</li>
+    <li><strong>Zelle:</strong> at <a href="{rel(d, 'ways-to-give/#zelle')}">{EMAIL}</a> (lower transaction fees = greater gifts!)</li>
+    <li><strong>Check:</strong> we&rsquo;ll personally pick it up! (just contact: <a href="mailto:{EMAIL}">{EMAIL}</a>)</li>
+   </ul>
+   <p>Deepen your connection to our community, demonstrate commitment to education, and know your neighborhood patrons, we hope you&rsquo;ll help.</p>
+   <p style="margin-top:32px">In partnership,</p>
+   <p class="sig">Roona Shah</p>
+   <p class="note">Mom, Parent, and Secretary for Friends of Lincoln Park High School<br>www.folphs.org, tax-i.d. #{TAX_ID}</p>
+  </div>
+ </div>
+</section>
+
+<section class="band-cream" id="give" aria-labelledby="give-title">
  <div class="wrap">
   <span class="eyebrow">It&rsquo;s easy to give</span>
   <h2 id="give-title">Three ways to give</h2>
   <div class="give-grid">
    <div class="give feature">
-    <h3>Credit card</h3>
-    <p>Donate online through our secure giving page. Quick and convenient.</p>
+    <h3>Credit Card</h3>
+    <p>Donate through our online link (quick &amp; convenient!)</p>
     {f'<a class="btn btn-gold" href="{DONATE_URL}">Donate online</a>' if DONATE_URL else '<p class="note">Our online giving page opens with the campaign kickoff. Check back soon, or give by Zelle or check today.</p>'}
    </div>
    <div class="give" id="zelle-give">
     <h3>Zelle</h3>
-    <p>Send to <strong>{EMAIL}</strong>. Lower transaction fees mean more of your gift reaches students.</p>
+    <p>At <strong>{EMAIL}</strong> (lower transaction fees = greater gifts!)</p>
     <p class="note">Add &ldquo;Legacy Fund&rdquo; and your email in the memo.</p>
     <a class="btn btn-ghost" href="{rel(d, 'ways-to-give/#zelle')}">Show the Zelle QR code</a>
    </div>
    <div class="give">
     <h3>Check</h3>
-    <p>We&rsquo;ll personally pick it up. Just email us to arrange it.</p>
+    <p>We&rsquo;ll personally pick it up! (just contact: <strong>{EMAIL}</strong>)</p>
     <a class="btn btn-ghost" href="mailto:{EMAIL}?subject=Legacy%20Fund%20check%20pickup">Email {EMAIL}</a>
    </div>
   </div>
@@ -341,23 +372,7 @@ def legacy(d):
  </div>
 </section>
 
-<section aria-labelledby="letter-title">
- <div class="wrap">
-  <span class="eyebrow">A letter to our neighbors</span>
-  <h2 id="letter-title">Why we&rsquo;re asking</h2>
-  <div class="letter">
-   <p>Dear Future Sponsor, I am personally asking you to invest in us.</p>
-   <p><strong>Lincoln Park High School, ranked in the top 3% by US News&rsquo; list of Best U.S. High Schools, is the hub for academic consistency, creativity and community!</strong> We represent nearly 2,200 students from all city zip codes; 93% are college-bound, 86%+ enroll in AP courses, plus plenty of participation in over 60 clubs and more than 25 sports.</p>
-   <p><strong>Thanks to our community, last year&rsquo;s fall fundraiser was a success: we raised about $150,000</strong> to build a new computer lab (equipped with 3-D printers), amplify our auditorium with a new speaker, and send teachers to training. But there is so much more to do, now!</p>
-   <p>As a local, neighborhood business, your financial support is not only a chance to assist us, but is also a unique opportunity to gain goodwill with widespread recognition, both within and around our school community; <strong>we&rsquo;ll provide prime advertising on Armitage St. as well as social media recognition, so that together, we can achieve all these goals.</strong></p>
-   <p>Since CPS is always in flux, <strong>your investment equals 6% of LPHS&rsquo; budget, and is essential to enriching our experiences!</strong> (See: <a href="{TRIBUNE}">Chicago Tribune</a>.)</p>
-   <p>Deepen your connection to our community, demonstrate commitment to education, and know your neighborhood patrons. We hope you&rsquo;ll help.</p>
-   <p style="margin-top:32px">In partnership,</p>
-   <p class="sig">Roona Shah</p>
-   <p class="note">Mom, Parent, and Secretary for Friends of Lincoln Park High School</p>
-  </div>
- </div>
-</section>'''
+'''
 
 def about(d):
     # (name, role, photo file in assets/img or None). Add a headshot by dropping it in assets/img and naming it here.
