@@ -30,7 +30,7 @@ SITE_BASE = "/"
 
 # Online donation link for the Legacy Fund (Keely is creating it).
 # Leave as None until it arrives: buttons then point to the Ways to Give section.
-DONATE_URL = None
+DONATE_URL = "https://fundraise.givesmart.com/form/eX2F7g?vid=1sqbel"
 
 # --------------------------------------------------------------- helpers
 def rel(depth, path):
