@@ -102,6 +102,15 @@ def page(slug, title, desc, body, current=None, og_img="assets/img/folphs-lions-
     canonical = f"{SITE_URL}/{slug}".rstrip("/") if slug else SITE_URL
     html = f'''<!doctype html>
 <html lang="en"><head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1YHKBL0TZF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){{dataLayer.push(arguments);}}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1YHKBL0TZF');
+</script>
 {f'<base href="{SITE_BASE}">' if out_file else ""}<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{desc}">
