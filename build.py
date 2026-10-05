@@ -25,7 +25,7 @@ LIBRARY_WISHLIST = "https://r20.rs6.net/tn.jsp?f=0018LaIUc4j_zHDc_KpnaaF9YY_IR_b
 TRIBUNE = "https://www.chicagotribune.com/2026/06/22/cps-budget-problems-school-fundraising/"
 TAX_ID = "E99474484"
 EIN = "36-4270448"
-ADDRESS_STREET = "2001 N Orchard St"
+ADDRESS_STREET = "2001 N Orchard St Mall"
 ADDRESS_CITY = "Chicago, IL 60614"
 SITE_URL = "https://folphs.org"
 # Path the site is served from. "/folphs-website/" on GitHub Pages preview; change to "/" once folphs.org points here.
