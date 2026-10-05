@@ -85,13 +85,12 @@ def footer(depth):
 <div class="cols">
 <div><img class="logo" src="{r('assets/img/friends-of-lincoln-park-high-school-logo-white.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="306">
 <p>A parent-run, volunteer organization supporting every student at Lincoln Park High School in Chicago.</p>
-<address style="font-style:normal;margin:0 0 1em">Friends of Lincoln Park High School (FOLPHS)<br>{ADDRESS_STREET}<br>{ADDRESS_CITY}</address>
-<p><a href="mailto:{EMAIL}">{EMAIL}</a></p></div>
+<address style="font-style:normal;margin:0 0 1em">Friends of Lincoln Park High School (FOLPHS)<br>{ADDRESS_STREET}<br>{ADDRESS_CITY}</address></div>
 <div><h2>Give</h2><ul><li><a href="{r('legacy-fund/')}">Lions Legacy Fund</a></li><li><a href="{r('ways-to-give/')}">Ways to Give</a></li><li><a href="{r('sponsors/')}">Become a Sponsor</a></li></ul></div>
 <div><h2>Join Us</h2><ul><li><a href="{r('stay-in-touch/#meetings')}">Monthly Meetings</a></li><li><a href="{r('events/')}">2026-27 Calendar</a></li><li><a href="{r('get-involved/')}">Volunteer</a></li><li><a href="{r('meeting-minutes/')}">Meeting Minutes</a></li></ul></div>
 <div><h2>Follow</h2><ul><li><a href="{INSTAGRAM}">Instagram @lphschicago</a></li><li><a href="{FB_PARENTS_GROUP}">All LPHS Parents group</a></li><li><a href="{r('stay-in-touch/')}">Stay in Touch</a></li></ul></div>
 </div>
-<div class="legal"><span>&copy; 2026 Friends of Lincoln Park High School (FOLPHS), a registered 501(c)(3) nonprofit organization. EIN: {EIN}. {ADDRESS_STREET}, {ADDRESS_CITY}.</span><span>FOLPHS is independent of Lincoln Park High School and Chicago Public Schools.</span></div>
+<div class="legal"><span>&copy; 2026 FOLPHS, a registered 501(c)(3) nonprofit organization. EIN: {EIN}.</span><span>FOLPHS is independent of Lincoln Park High School and Chicago Public Schools.</span></div>
 </div></footer>
 <script>
 (function(){{var b=document.querySelector('.menu-toggle'),n=document.getElementById('site-nav');
