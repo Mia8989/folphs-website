@@ -125,7 +125,7 @@ def page(slug, title, desc, body, current=None, og_img="assets/img/folphs-lions-
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Oswald:wght@500&family=Playfair+Display:ital,wght@0,900;1,500;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{rel(depth, 'assets/site.css')}">
-<script type="application/ld+json">{json.dumps({"@context":"https://schema.org","@type":"NGO","name":"Friends of Lincoln Park High School","alternateName":"FOLPHS","url":SITE_URL,"email":EMAIL,"logo":SITE_URL+"/assets/img/friends-of-lincoln-park-high-school-logo.png","sameAs":[INSTAGRAM,FB_PAGE],"taxID":EIN,"nonprofitStatus":"Nonprofit501c3","address":{"@type":"PostalAddress","streetAddress":ADDRESS_STREET,"postalCode":"60614","addressLocality":"Chicago","addressRegion":"IL","addressCountry":"US"}})}</script>
+<script type="application/ld+json">{json.dumps({"@context":"https://schema.org","@type":"NGO","name":"Friends of Lincoln Park High School","alternateName":"FOLPHS","url":SITE_URL,"logo":SITE_URL+"/assets/img/friends-of-lincoln-park-high-school-logo.png","sameAs":[INSTAGRAM,FB_PAGE],"taxID":EIN,"nonprofitStatus":"Nonprofit501c3","address":{"@type":"PostalAddress","streetAddress":ADDRESS_STREET,"postalCode":"60614","addressLocality":"Chicago","addressRegion":"IL","addressCountry":"US"}})}</script>
 </head><body>
 {header(depth, current)}
 <main id="main">
