@@ -24,6 +24,9 @@ RAISE_RIGHT_CODE = "G9BASLZ6VWIN"
 LIBRARY_WISHLIST = "https://r20.rs6.net/tn.jsp?f=0018LaIUc4j_zHDc_KpnaaF9YY_IR_bkQeAwWqzXrxKsWWqGLdiq3C3wsxVgO-Lwlt297EsT4KserWTY-ClMrl0Gl0GMed9q8Ki6smSaIiNX0SYBpte50hGKivSFVp6sauwtDrPd1lwXEUjxg3rE8-ZKTHBzKbCciiPukrNq3AhX5ZH57WfWvz4rsMmfaAE5dG4EC6nqiAmrwWthIJfLrtrVA==&c=QocJfDCmcT671qFqXg1FQmEeD0e2zlIxWJOCSK6RO7DrDX7xicDUgg==&ch=et-egfdEIZpUalm6v60sq7AqiP8ME1RSloLmhf74OkHKRRoRKl2ZIg=="
 TRIBUNE = "https://www.chicagotribune.com/2026/06/22/cps-budget-problems-school-fundraising/"
 TAX_ID = "E99474484"
+EIN = "36-4270448"
+ADDRESS_STREET = "2001 N Orchard St"
+ADDRESS_CITY = "Chicago, IL 60614"
 SITE_URL = "https://folphs.org"
 # Path the site is served from. "/folphs-website/" on GitHub Pages preview; change to "/" once folphs.org points here.
 SITE_BASE = "/"
@@ -82,12 +85,13 @@ def footer(depth):
 <div class="cols">
 <div><img class="logo" src="{r('assets/img/friends-of-lincoln-park-high-school-logo-white.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="306">
 <p>A parent-run, volunteer organization supporting every student at Lincoln Park High School in Chicago.</p>
+<address style="font-style:normal;margin:0 0 1em">Friends of Lincoln Park High School (FOLPHS)<br>{ADDRESS_STREET}<br>{ADDRESS_CITY}</address>
 <p><a href="mailto:{EMAIL}">{EMAIL}</a></p></div>
 <div><h2>Give</h2><ul><li><a href="{r('legacy-fund/')}">Lions Legacy Fund</a></li><li><a href="{r('ways-to-give/')}">Ways to Give</a></li><li><a href="{r('sponsors/')}">Become a Sponsor</a></li></ul></div>
 <div><h2>Join Us</h2><ul><li><a href="{r('stay-in-touch/#meetings')}">Monthly Meetings</a></li><li><a href="{r('events/')}">2026-27 Calendar</a></li><li><a href="{r('get-involved/')}">Volunteer</a></li><li><a href="{r('meeting-minutes/')}">Meeting Minutes</a></li></ul></div>
 <div><h2>Follow</h2><ul><li><a href="{INSTAGRAM}">Instagram @lphschicago</a></li><li><a href="{FB_PARENTS_GROUP}">All LPHS Parents group</a></li><li><a href="{r('stay-in-touch/')}">Stay in Touch</a></li></ul></div>
 </div>
-<div class="legal"><span>&copy; 2026 Friends of Lincoln Park High School. FOLPHS is a registered 501(c)(3) nonprofit, tax ID {TAX_ID}.</span><span>FOLPHS is independent of Lincoln Park High School and Chicago Public Schools.</span></div>
+<div class="legal"><span>&copy; 2026 Friends of Lincoln Park High School (FOLPHS), a registered 501(c)(3) nonprofit organization. EIN: {EIN}. {ADDRESS_STREET}, {ADDRESS_CITY}.</span><span>FOLPHS is independent of Lincoln Park High School and Chicago Public Schools.</span></div>
 </div></footer>
 <script>
 (function(){{var b=document.querySelector('.menu-toggle'),n=document.getElementById('site-nav');
@@ -122,7 +126,7 @@ def page(slug, title, desc, body, current=None, og_img="assets/img/folphs-lions-
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Oswald:wght@500&family=Playfair+Display:ital,wght@0,900;1,500;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{rel(depth, 'assets/site.css')}">
-<script type="application/ld+json">{json.dumps({"@context":"https://schema.org","@type":"NGO","name":"Friends of Lincoln Park High School","alternateName":"FOLPHS","url":SITE_URL,"email":EMAIL,"logo":SITE_URL+"/assets/img/friends-of-lincoln-park-high-school-logo.png","sameAs":[INSTAGRAM,FB_PAGE],"address":{"@type":"PostalAddress","addressLocality":"Chicago","addressRegion":"IL","addressCountry":"US"}})}</script>
+<script type="application/ld+json">{json.dumps({"@context":"https://schema.org","@type":"NGO","name":"Friends of Lincoln Park High School","alternateName":"FOLPHS","url":SITE_URL,"email":EMAIL,"logo":SITE_URL+"/assets/img/friends-of-lincoln-park-high-school-logo.png","sameAs":[INSTAGRAM,FB_PAGE],"taxID":EIN,"nonprofitStatus":"Nonprofit501c3","address":{"@type":"PostalAddress","streetAddress":ADDRESS_STREET,"postalCode":"60614","addressLocality":"Chicago","addressRegion":"IL","addressCountry":"US"}})}</script>
 </head><body>
 {header(depth, current)}
 <main id="main">
