@@ -617,7 +617,7 @@ def give(d):
 </section>
 <section class="band-cream" id="marquee" aria-labelledby="marquee-title">
  <div class="wrap split rev">
-  <div class="figure">{img(d, 'lphs-marquee-sign-armitage.webp', 'The LPHS marquee sign on Armitage showing a personalized congratulations message', 1200, 900)}</div>
+  <div class="figure" style="max-width:440px;margin-inline:auto">{img(d, 'lphs-marquee-sign-armitage-upright.webp', 'The LPHS marquee sign on Armitage showing a personalized congratulations message', 900, 1200)}</div>
   <div>
    <span class="eyebrow">$50 donation</span>
    <h2 id="marquee-title">Put a name in lights on the marquee</h2>
