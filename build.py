@@ -36,6 +36,8 @@ EIN = "36-4270448"
 ADDRESS_STREET = "2001 N Orchard St Mall"
 ADDRESS_CITY = "Chicago, IL 60614"
 SITE_URL = "https://folphs.org"
+# Website credit: Dahlia Imanbay (volunteer) hosts and donates the site through her agency.
+APD_URL = "https://aipowereddahlia.com"
 # Path the site is served from. "/folphs-website/" on GitHub Pages preview; change to "/" once folphs.org points here.
 SITE_BASE = "/"
 
@@ -91,18 +93,21 @@ def header(depth, current):
     items = []
     for label, href, sub in NAV:
         if sub:
-            is_cur = bool(current) and any(s[1].split("#")[0] == current for s in sub)
+            is_cur = bool(current) and any(s[1].split("#")[0] == current for s in sub) and current != "shop/"
             subs = "".join(f'<li><a href="{h if h.startswith(("http", "mailto:")) else rel(depth, h)}">{t}</a></li>' for t, h in sub)
             items.append(f'<li><details class="{"current" if is_cur else ""}"><summary>{label}</summary><ul class="sub">{subs}</ul></details></li>')
         else:
             cur = ' aria-current="page"' if current and href == current else ""
             items.append(f'<li><a href="{rel(depth, href)}"{cur}>{label}</a></li>')
     return f'''<a class="skip" href="#main">Skip to content</a>
-<header class="site-header"><div class="wrap">
-<a class="brand" href="{rel(depth, '')}" aria-label="Friends of Lincoln Park High School, home"><img class="seal" src="{rel(depth, 'assets/img/lincoln-park-high-school-seal.png')}" alt="Lincoln Park High School seal" width="400" height="400"><img src="{rel(depth, 'assets/img/friends-of-lincoln-park-high-school-logo.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="322"></a>
+<div class="topbar"><div class="wrap">
+<a class="brand" href="{rel(depth, '')}" aria-label="Friends of Lincoln Park High School, home"><img class="seal" src="{rel(depth, 'assets/img/lincoln-park-high-school-seal.png')}" alt="Lincoln Park High School seal" width="400" height="400"><img src="{rel(depth, 'assets/img/friends-of-lincoln-park-high-school-logo-white.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="306"></a>
+<div class="util"><a href="{rel(depth, 'events/')}">2026-27 Calendar</a><a href="{rel(depth, 'stay-in-touch/#meetings')}">Meetings</a><a href="{INSTAGRAM}">{IG_SVG}<span>@lphschicago</span></a><a class="util-btn" href="{rel(depth, 'shop/')}">Shop Spirit Wear</a></div>
 <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
-<nav class="nav" id="site-nav" aria-label="Main"><ul>{"".join(items)}</ul></nav>
 <a class="btn btn-gold header-cta" href="{donate_href(depth)}">Donate</a>
+</div></div>
+<header class="site-header"><div class="wrap">
+<nav class="nav" id="site-nav" aria-label="Main"><ul>{"".join(items)}</ul></nav>
 </div></header>'''
 
 def donate_band(depth):
@@ -134,7 +139,7 @@ def footer(depth):
 <div><h2>Join Us</h2><ul><li><a href="{r('stay-in-touch/#meetings')}">Monthly Meetings</a></li><li><a href="{r('events/')}">2026-27 Calendar</a></li><li><a href="{r('get-involved/')}">Volunteer</a></li><li><a href="{r('meeting-minutes/')}">Meeting Minutes</a></li></ul></div>
 <div><h2>Follow</h2><ul><li><a href="{INSTAGRAM}">Instagram @lphschicago</a></li><li><a href="{FB_PARENTS_GROUP}">All LPHS Parents group</a></li><li><a href="{r('stay-in-touch/')}">Stay in Touch</a></li><li><a href="{contact_href(depth)}">Contact Us</a></li></ul></div>
 </div>
-<div class="legal"><span>&copy; 2026 FOLPHS, a registered 501(c)(3) nonprofit organization. EIN: {EIN}.</span><span>FOLPHS is independent of Lincoln Park High School and Chicago Public Schools.</span></div>
+<div class="legal"><span>&copy; 2026 FOLPHS, a registered 501(c)(3) nonprofit organization. EIN: {EIN}.</span><span>FOLPHS is independent of Lincoln Park High School and Chicago Public Schools.</span><span>Website hosted and donated by <a href="{APD_URL}">aipowereddahlia.com</a>.</span></div>
 </div></footer>
 <script>
 (function(){{var b=document.querySelector('.menu-toggle'),n=document.getElementById('site-nav');
@@ -705,6 +710,7 @@ def sponsors(d):
    <figure style="margin:0"><div class="figure">{img(d, 'folphs-2025-26-sponsor-banner-armitage.webp', 'The 2025-26 FOLPHS sponsor banner on the Armitage St. fence at Lincoln Park High School, reading Shining a light on our sponsors with eight sponsor logos', 1400, 1050)}</div><figcaption class="caption">Our 2025-26 sponsor banner on Armitage St.</figcaption></figure>
   </div>
   {"".join(tiers)}
+  <div class="sponsor-tier" id="website-partner"><h3>Website Partner</h3><div class="partner"><div class="logos lg"><a href="{APD_URL}">{img(d, "sponsors/ai-powered-dahlia.webp", "AI-Powered Dahlia, Strategy and Systems Services", 900, 356)}</a></div><p>This website is hosted and donated by <a href="{APD_URL}">aipowereddahlia.com</a>.</p></div></div>
  </div>
 </section>'''
 
@@ -774,63 +780,105 @@ SHOP_ITEMS = [
 # products without their own photo borrow the closest one until a photo is supplied
 SHOP_PHOTO = {"S018": "s012", "S023": "s022"}
 
+# From the Spirit Wear store page (Dahlia, 2026-10-09). First Wednesday only, 11 am to 2:30 pm.
+SHOP_DAYS = [("2026-10-07", "Wednesday, October 7"), ("2026-11-04", "Wednesday, November 4"), ("2026-12-02", "Wednesday, December 2"),
+             ("2027-01-06", "Wednesday, January 6"), ("2027-02-03", "Wednesday, February 3"), ("2027-03-03", "Wednesday, March 3"),
+             ("2027-04-07", "Wednesday, April 7"), ("2027-05-05", "Wednesday, May 5"), ("2027-06-02", "Wednesday, June 2")]
+
 def shop(d):
-    def card(sku, name, price, path):
+    def card(sku, name, price, path, cat, mini=False):
         ph = SHOP_PHOTO.get(sku, sku.lower())
         plain = name.replace("&ldquo;", "").replace("&rdquo;", "")
+        if mini:
+            return (f'<a class="mini" href="{_P}{path}" target="_blank" rel="noopener" aria-label="{plain}, {price}, opens the store in a new tab">'
+                    f'<span class="ph">{img(d, f"shop/{ph}.webp", "", 640, 640, lazy=False)}</span><b>{name}</b><span>{price}</span></a>')
         return (f'<li><a class="product" href="{_P}{path}" target="_blank" rel="noopener" aria-label="{plain}, {price}, opens the store in a new tab">'
                 f'<span class="ph">{img(d, f"shop/{ph}.webp", plain, 640, 640)}</span>'
-                f'<span class="meta"><span class="sku">{sku}</span><span class="name">{name}</span><span class="price">{price}</span></span></a></li>')
-    jump = "".join(f'<a href="#{slug}">{title}</a>' for title, slug, _ in SHOP_ITEMS)
+                f'<span class="meta"><span class="sku">{cat}</span><span class="name">{name}</span>'
+                f'<span class="buy"><span class="price">{price}</span><span class="go">Shop <i aria-hidden="true">&rarr;</i></span></span></span></a></li>')
+    by = {it[0]: (it, title) for title, _, items in SHOP_ITEMS for it in items}
+    featured = "".join(card(*by[k][0], by[k][1], mini=True) for k in ("S021", "S019", "S016", "S013"))
+    pills = '<button type="button" class="on" data-cat="all">All products</button>' + "".join(f'<button type="button" data-cat="{slug}">{title}</button>' for title, slug, _ in SHOP_ITEMS) + '<button type="button" data-cat="gift-card">Gift card</button>'
     sections = "".join(f'''
-<section class="shop-cat{" band-cream" if i % 2 else ""}" id="{slug}" aria-labelledby="{slug}-title">
- <div class="wrap">
-  <div class="shop-cat-head"><h2 id="{slug}-title">{title}</h2><span class="count">{len(items)} items</span></div>
-  <ul class="products">{"".join(card(*it) for it in items)}</ul>
- </div>
-</section>''' for i, (title, slug, items) in enumerate(SHOP_ITEMS))
+  <section class="shop-cat" id="{slug}" data-cat="{slug}" aria-labelledby="{slug}-title">
+   <h3 class="cat-title" id="{slug}-title"><span>{title}</span></h3>
+   <ul class="products">{"".join(card(*it, title) for it in items)}</ul>
+  </section>''' for title, slug, items in SHOP_ITEMS)
     return f'''
-<section class="page-hero shop-hero on-navy"><div class="wrap">
- <div>
-  <span class="eyebrow" style="color:var(--gold-light)">LPHS Spirit Wear shop</span>
-  <h1>Wear the Pride.</h1>
-  <p>Hoodies, tees, joggers, hats and gifts in navy and gold. Every purchase supports Lincoln Park High School students.</p>
-  <div class="cta-row"><a class="btn btn-gold" href="{SHOP_ALL}" target="_blank" rel="noopener">Shop all</a><a class="btn btn-ghost" href="#gift-card">Send a gift card</a></div>
- </div>
- <div class="shop-stack" aria-hidden="true">
-  {img(d, "shop/s021.webp", "", 640, 640, lazy=False)}{img(d, "shop/u010.webp", "", 640, 640, lazy=False)}{img(d, "shop/u002.webp", "", 640, 640, lazy=False)}
- </div>
-</div></section>
-<nav class="shop-jump" aria-label="Shop categories"><div class="wrap"><a href="#gift-card">Gift card</a>{jump}</div></nav>
-
-<section id="gift-card" aria-labelledby="gift-title">
- <div class="wrap split">
-  <div>
-   <span class="eyebrow">Not sure of the size?</span>
-   <h2 id="gift-title">Give a Spirit Wear gift card</h2>
-   <p>Let your Lion pick. Gift cards are sent by email and work on everything in the online store.</p>
-   <div class="cta-row"><a class="btn btn-navy" href="{GIFT_CARD}" target="_blank" rel="noopener">Buy a gift card</a></div>
-  </div>
-  <a class="gift-card" href="{GIFT_CARD}" target="_blank" rel="noopener" aria-label="Buy a Spirit Wear gift card, opens in a new tab">
-   <span class="eyebrow">LPHS Spirit Wear</span><span class="gc-title">Gift Card</span>{img(d, "lincoln-park-high-school-seal.png", "", 400, 400)}
-  </a>
+<section class="shop-top on-navy">
+ <div class="wrap">
+  <img class="seal" src="{rel(d, 'assets/img/lincoln-park-high-school-seal.png')}" alt="" width="400" height="400">
+  <h1>Wear the <em>Pride</em></h1>
+  <p>Hoodies, tees, joggers, hats and gifts in navy and gold, for students, families and alumni.</p>
+  <span class="shop-pill">100% of proceeds benefit LPHS students</span>
  </div>
 </section>
-{sections}
-<section aria-labelledby="pickup-title">
+<div class="shop-strip"><div class="wrap">Order online 24/7 &nbsp;&middot;&nbsp; Pick up at school the first Wednesday of every month</div></div>
+
+<section class="shop-feature on-navy" aria-labelledby="feat-title">
+ <div class="wrap">
+  <div>
+   <span class="shop-pill">Featured</span>
+   <h2 id="feat-title">Hoodie season <em>is here</em></h2>
+   <p>The navy LP hoodie, the heather grey zip up and the Chicago skyline hoodie are the ones Lions reach for first. Fifteen hoodies and sweatshirts in all.</p>
+   <div class="cta-row"><a class="btn btn-gold" href="#hoodies">Shop hoodies</a><a class="more" href="#all-products">View all items &darr;</a></div>
+  </div>
+  <div class="minis">{featured}</div>
+ </div>
+</section>
+
+<section class="shop-all" id="all-products" aria-labelledby="all-title">
+ <div class="wrap">
+  <span class="eyebrow">LPHS Spirit Wear</span>
+  <h2 id="all-title">Shop all products</h2>
+  <p class="lede">Tap any item to see sizes and order in our online store. Orders are picked up at school on the first Wednesday of the month.</p>
+  <div class="shop-pills" role="group" aria-label="Filter by category">{pills}</div>
+  {sections}
+  <section class="shop-cat" id="gift-card" data-cat="gift-card" aria-labelledby="gift-title">
+   <h3 class="cat-title" id="gift-title"><span>Gift card</span></h3>
+   <a class="gift-row" href="{GIFT_CARD}" target="_blank" rel="noopener" aria-label="Buy a Spirit Wear gift card, opens in a new tab">
+    <span class="gift-card"><span class="eyebrow">LPHS Spirit Wear</span><span class="gc-title">Gift Card</span>{img(d, "lincoln-park-high-school-seal.png", "", 400, 400)}</span>
+    <span class="gift-copy"><b>Not sure of the size? Let your Lion pick.</b><span>Gift cards are sent by email and work on everything in the online store.</span><span class="go">Buy a gift card <i aria-hidden="true">&rarr;</i></span></span>
+   </a>
+  </section>
+  <div class="cta-row shop-end"><a class="btn btn-navy" href="{SHOP_ALL}" target="_blank" rel="noopener">Open the full online store</a></div>
+ </div>
+</section>
+
+<section class="band-cream" id="store-hours" aria-labelledby="pickup-title">
  <div class="wrap split">
   <div>
-   <span class="eyebrow">How it works</span>
-   <h2 id="pickup-title">Order online, pick up at school</h2>
+   <span class="eyebrow">In person and pickup</span>
+   <h2 id="pickup-title">First Wednesday of the month, 11 am to 2:30 pm</h2>
+   <p class="next-open">Next store day: <strong id="next-open">see the dates below</strong></p>
+   <p>Shop in person or pick up your online order at LPHS, in the Main Building Cafeteria. The store is open on the first Wednesday of the month only, September through June.</p>
+   <div class="cta-row"><a class="btn btn-navy" href="mailto:sw4lphs@gmail.com">Contact</a><a class="btn btn-ghost" href="{SHOP_ALL}" target="_blank" rel="noopener">Open the online store</a></div>
   </div>
   <div>
-   <p><strong>Online:</strong> open to anyone, 24/7. Pick up your order in the main building cafeteria on the first Wednesday of every month.</p>
-   <p><strong>In person:</strong> open to current LP students, staff and community on the first Wednesday of every month during the school year, September through June, 11:00 am to 2:30 pm in the Main Building Cafeteria.</p>
-   <p>Need a different pick-up arrangement? <a href="{contact_href(d, 'spirit-wear')}">Send the Spirit Wear team a message</a> before you order.</p>
-   <div class="cta-row"><a class="btn btn-navy" href="{SHOP_ALL}" target="_blank" rel="noopener">Shop all</a><a class="btn btn-ghost" href="{contact_href(d, 'spirit-wear')}">Ask a question</a></div>
+   <h3>2026-27 store days</h3>
+   <ul class="store-days">{"".join(f'<li data-d="{iso}">{label}</li>' for iso, label in SHOP_DAYS)}</ul>
+   <ul class="checks">
+    <li>Orders are filled on store days.</li>
+    <li>Online orders must be placed before 8 am on the store day to be ready for pickup.</li>
+    <li>Newly Admitted Student Night for incoming families: date to be announced for 2027.</li>
+    <li>The Spirit Wear Store is run by FOLPHS parent volunteers, and 100% of proceeds benefit LPHS students.</li>
+   </ul>
   </div>
  </div>
-</section>'''
+</section>
+<script>
+(function(){{var t=new Date();t.setHours(0,0,0,0);var n=null;
+document.querySelectorAll('.store-days li').forEach(function(li){{var d=new Date(li.dataset.d+'T00:00:00');if(d<t)li.classList.add('past');else if(!n){{n=li;li.classList.add('next')}}}});
+if(n)document.getElementById('next-open').textContent=n.textContent+', 11 am to 2:30 pm';}})();
+</script>
+<script>
+(function(){{var b=document.querySelectorAll('.shop-pills button'),c=document.querySelectorAll('.shop-cat');
+function pick(k){{b.forEach(function(x){{var on=x.dataset.cat===k;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on)}});c.forEach(function(s){{s.hidden=k!=='all'&&s.dataset.cat!==k}})}}
+b.forEach(function(x){{x.addEventListener('click',function(){{pick(x.dataset.cat)}})}});
+function fromHash(){{var h=location.hash.slice(1);if(h&&document.querySelector('.shop-cat[data-cat="'+h+'"]')){{pick(h);document.getElementById('all-products').scrollIntoView()}}}}
+window.addEventListener('hashchange',fromHash);fromHash();
+}})();
+</script>'''
 
 def link(d):
     """Instagram link-in-bio page (folphs.org/link). Donate first and largest, then one row per destination."""
