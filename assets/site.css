@@ -388,3 +388,10 @@ body:has(.bio){background:var(--navy)}
 .bio-links.sm{margin-top:12px}
 .bio-links.sm a{padding:16px 4px;min-height:56px}
 .bio-links.sm b{font-size:18px;font-weight:600}
+
+/* single header Donate button, far right at every width */
+.site-header .header-cta{padding:12px 20px;margin-left:8px;flex:none}
+@media (max-width:1240px){
+  .menu-toggle{order:0;margin-left:auto}
+  .site-header .header-cta{margin-left:0;padding:12px 18px;font-size:16px}
+}

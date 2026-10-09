@@ -100,10 +100,9 @@ def header(depth, current):
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="wrap">
 <a class="brand" href="{rel(depth, '')}" aria-label="Friends of Lincoln Park High School, home"><img class="seal" src="{rel(depth, 'assets/img/lincoln-park-high-school-seal.png')}" alt="Lincoln Park High School seal" width="400" height="400"><img src="{rel(depth, 'assets/img/friends-of-lincoln-park-high-school-logo.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="322"></a>
-<a class="btn btn-gold header-donate" href="{donate_href(depth)}">Donate</a>
 <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
-<nav class="nav" id="site-nav" aria-label="Main"><ul>{"".join(items)}</ul>
-<a class="btn btn-gold" href="{donate_href(depth)}">Donate</a></nav>
+<nav class="nav" id="site-nav" aria-label="Main"><ul>{"".join(items)}</ul></nav>
+<a class="btn btn-gold header-cta" href="{donate_href(depth)}">Donate</a>
 </div></header>'''
 
 def donate_band(depth):
@@ -145,6 +144,9 @@ n.querySelectorAll('a').forEach(function(a){{a.addEventListener('click',function
 }})();
 </script>'''
 
+import hashlib
+CSS_V = hashlib.md5((ROOT / 'assets/site.css').read_bytes()).hexdigest()[:8]  # cache-buster so CSS changes reach returning visitors
+
 def page(slug, title, desc, body, current=None, og_img="assets/img/folphs-lions-legacy-fund-share.jpg", out_file=None, bare=False):
     depth = 0 if out_file else slug.count("/") + (1 if slug else 0)
     canonical = f"{SITE_URL}/{slug}".rstrip("/") if slug else SITE_URL
@@ -169,7 +171,7 @@ def page(slug, title, desc, body, current=None, og_img="assets/img/folphs-lions-
 <link rel="icon" href="{rel(depth, 'assets/img/folphs-lion-icon.png')}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Oswald:wght@500&family=Playfair+Display:ital,wght@0,900;1,500;1,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{rel(depth, 'assets/site.css')}">
+<link rel="stylesheet" href="{rel(depth, 'assets/site.css')}?v={CSS_V}">
 <script type="application/ld+json">{json.dumps({"@context":"https://schema.org","@type":"NGO","name":"Friends of Lincoln Park High School","alternateName":"FOLPHS","url":SITE_URL,"logo":SITE_URL+"/assets/img/friends-of-lincoln-park-high-school-logo.png","sameAs":[INSTAGRAM,FB_PAGE],"taxID":EIN,"nonprofitStatus":"Nonprofit501c3","address":{"@type":"PostalAddress","streetAddress":ADDRESS_STREET,"postalCode":"60614","addressLocality":"Chicago","addressRegion":"IL","addressCountry":"US"}})}</script>
 </head><body>
 {'' if bare else header(depth, current)}
