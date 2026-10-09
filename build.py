@@ -16,7 +16,7 @@ ROOT = pathlib.Path(__file__).parent
 ZELLE_ID = "folphs@gmail.com"
 # Contact form backend: accepts a JSON POST and forwards it to the FOLPHS inbox.
 # The inbox address lives in that service, never in this repo or the page source.
-FORM_ENDPOINT = ""
+FORM_ENDPOINT = "/api/contact"  # Cloudflare Worker folphs-contact -> Resend (2026-10-09)
 FORM_KEY = ""
 SPIRIT_WEAR_EMAIL = "sw4lphs@gmail.com"
 MAIL_SUBJECTS = {"legacy-fund": "Legacy Fund check pickup", "sponsorship": "FOLPHS business sponsorship", "volunteer": "Volunteering with FOLPHS", "spirit-wear": "Spirit Wear order"}

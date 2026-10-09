@@ -34,23 +34,64 @@
 </div></header>
 <main id="main">
 
-<section class="page-hero"><div class="wrap"><span class="eyebrow" style="color:var(--gold-light)">Contact us</span><h1>Questions? A parent volunteer will answer.</h1><p>Pick what your message is about and your email app opens with it addressed to the right volunteer.</p></div></section>
-<section aria-labelledby="topics-title">
- <div class="wrap split">
+<section class="page-hero"><div class="wrap"><span class="eyebrow" style="color:var(--gold-light)">Contact us</span><h1>Questions? A parent volunteer will answer.</h1><p>Ask about giving, sponsoring, volunteering or anything else about FOLPHS. We reply within a few days.</p></div></section>
+<section aria-labelledby="form-title">
+ <div class="wrap split contact-split">
   <div>
-   <h2 id="topics-title">What is your message about?</h2>
-   <ul class="contact-topics"><li><a href="mailto:folphs@gmail.com"><span><b>General question</b></span><i aria-hidden="true"></i></a></li><li><a href="mailto:folphs@gmail.com?subject=Legacy%20Fund%20check%20pickup"><span><b>Lions Legacy Fund gift or check pickup</b></span><i aria-hidden="true"></i></a></li><li><a href="mailto:folphs@gmail.com?subject=FOLPHS%20business%20sponsorship"><span><b>Business sponsorship</b></span><i aria-hidden="true"></i></a></li><li><a href="mailto:folphs@gmail.com?subject=Volunteering%20with%20FOLPHS"><span><b>Volunteering and committees</b></span><i aria-hidden="true"></i></a></li><li><a href="mailto:sw4lphs@gmail.com?subject=Spirit%20Wear%20order"><span><b>Spirit Wear order or pickup</b></span><i aria-hidden="true"></i></a></li><li><a href="mailto:folphs@gmail.com"><span><b>Marquee messages</b></span><i aria-hidden="true"></i></a></li><li><a href="mailto:folphs@gmail.com"><span><b>Website feedback</b></span><i aria-hidden="true"></i></a></li></ul>
+   <h2 id="form-title">Send us a message</h2>
+   <form id="contact-form" class="contact-form" action="/api/contact" method="post" data-key="">
+    <div class="field"><label for="cf-topic">What is this about?</label><select id="cf-topic" name="topic"><option value="general">General question</option><option value="legacy-fund">Lions Legacy Fund gift or check pickup</option><option value="sponsorship">Business sponsorship</option><option value="volunteer">Volunteering and committees</option><option value="spirit-wear">Spirit Wear order or pickup</option><option value="marquee">Marquee messages</option><option value="website">Website feedback</option></select></div>
+    <div class="field-row">
+     <div class="field"><label for="cf-name">Your name</label><input id="cf-name" name="name" type="text" autocomplete="name" required></div>
+     <div class="field"><label for="cf-email">Your email</label><input id="cf-email" name="email" type="email" autocomplete="email" required></div>
+    </div>
+    <div class="field"><label for="cf-message">Message</label><textarea id="cf-message" name="message" rows="6" required></textarea></div>
+    <div class="hp" aria-hidden="true"><label>Leave this box empty <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label></div>
+    <button class="btn btn-navy" type="submit">Send message</button>
+    <p class="note form-note">We only use your email to reply to you.</p>
+    <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+   </form>
+   <div id="form-done" class="form-done" tabindex="-1" hidden>
+    <span class="eyebrow">Message sent</span>
+    <h3>Thank you. We&rsquo;ve got it.</h3>
+    <p>A FOLPHS volunteer will reply to the email you gave us, usually within a few days.</p>
+    <a class="btn btn-ghost" href="../">Back to home</a>
+   </div>
   </div>
-  <div class="reach">
-   <h2>Other ways to reach us</h2>
+  <aside class="reach" aria-labelledby="reach-title">
+   <h2 id="reach-title">Other ways to reach us</h2>
    <dl>
-    <dt>Instagram</dt><dd><a href="https://www.instagram.com/lphschicago/">Message @lphschicago</a></dd>
-    <dt>In person</dt><dd>Come to a meeting: the 2nd Tuesday of every month, 6:00 pm at LPHS. <a href="../stay-in-touch/#meetings">Meeting details</a></dd>
-    <dt>Parent groups</dt><dd><a href="../stay-in-touch/">LPHS parent groups on Facebook</a></dd>
+    <dt>In person</dt><dd>Come to a meeting: 2nd Tuesday of every month, 6:00 pm at LPHS. <a href="../stay-in-touch/#meetings">Meeting details</a></dd>
+    <dt>Instagram</dt><dd><a href="https://www.instagram.com/lphschicago/">@lphschicago</a></dd>
+    <dt>Volunteering</dt><dd><a href="https://tinyurl.com/FOLPHS-Volunteer-Interest-Form">Volunteer interest form</a></dd>
+    <dt>By mail</dt><dd>Friends of Lincoln Park High School<br>2001 N Orchard St Mall<br>Chicago, IL 60614</dd>
    </dl>
-  </div>
+  </aside>
  </div>
 </section>
+<script>
+(function(){
+var f=document.getElementById('contact-form');if(!f)return;
+var t=new URLSearchParams(location.search).get('topic'),sel=f.elements.topic;
+if(t){for(var i=0;i<sel.options.length;i++){if(sel.options[i].value===t)sel.selectedIndex=i}}
+var st=document.getElementById('form-status'),btn=f.querySelector('button[type=submit]'),done=document.getElementById('form-done');
+f.addEventListener('submit',function(e){
+ e.preventDefault();
+ if(f.elements.botcheck.checked)return;
+ if(!f.reportValidity())return;
+ var label=sel.options[sel.selectedIndex].text;
+ var body={name:f.elements.name.value.trim(),email:f.elements.email.value.trim(),topic:label,subject:'FOLPHS website: '+label,from_name:'FOLPHS website',message:f.elements.message.value.trim()};
+ var k=f.getAttribute('data-key');if(k)body.access_key=k;
+ btn.disabled=true;btn.textContent='Sending...';st.textContent='';st.className='form-status';
+ fetch(f.action,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body)})
+ .then(function(r){if(!r.ok)throw new Error(r.status);
+  f.hidden=true;done.hidden=false;done.focus();
+  if(window.gtag)gtag('event','generate_lead',{form_topic:sel.value});})
+ .catch(function(){btn.disabled=false;btn.textContent='Send message';
+  st.className='form-status err';st.textContent='Sorry, your message did not send. Please try again in a minute, or message us on Instagram @lphschicago.';});
+});
+})();
+</script>
 <section class="donate-band" aria-labelledby="donate-band-title">
  <div class="wrap">
   <div>
@@ -72,7 +113,7 @@
 <address style="font-style:normal;margin:0 0 1em">Friends of Lincoln Park High School (FOLPHS)<br>2001 N Orchard St Mall<br>Chicago, IL 60614</address></div>
 <div><h2>Give</h2><ul><li><a href="https://fundraise.givesmart.com/form/eX2F7g?vid=1stt89">Donate Online</a></li><li><a href="../legacy-fund/">Lions Legacy Fund</a></li><li><a href="../ways-to-give/">Ways to Give</a></li><li><a href="../sponsors/">Become a Sponsor</a></li></ul></div>
 <div><h2>Join Us</h2><ul><li><a href="../stay-in-touch/#meetings">Monthly Meetings</a></li><li><a href="../events/">2026-27 Calendar</a></li><li><a href="../get-involved/">Volunteer</a></li><li><a href="../meeting-minutes/">Meeting Minutes</a></li></ul></div>
-<div><h2>Follow</h2><ul><li><a href="https://www.instagram.com/lphschicago/">Instagram @lphschicago</a></li><li><a href="https://www.facebook.com/groups/2832926726795889/">All LPHS Parents group</a></li><li><a href="../stay-in-touch/">Stay in Touch</a></li><li><a href="mailto:folphs@gmail.com">Contact Us</a></li></ul></div>
+<div><h2>Follow</h2><ul><li><a href="https://www.instagram.com/lphschicago/">Instagram @lphschicago</a></li><li><a href="https://www.facebook.com/groups/2832926726795889/">All LPHS Parents group</a></li><li><a href="../stay-in-touch/">Stay in Touch</a></li><li><a href="../contact/">Contact Us</a></li></ul></div>
 </div>
 <div class="legal"><span>&copy; 2026 FOLPHS, a registered 501(c)(3) nonprofit organization. EIN: 36-4270448.</span><span>FOLPHS is independent of Lincoln Park High School and Chicago Public Schools.</span><span>Website hosted and donated by <a href="https://aipowereddahlia.com">aipowereddahlia.com</a>.</span></div>
 </div></footer>
