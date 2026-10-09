@@ -12,12 +12,14 @@ ROOT = pathlib.Path(__file__).parent
 
 # ---------------------------------------------------------------- settings
 # Zelle is registered to this address, so it stays visible ONLY in the Zelle instructions.
-# Everywhere else the site links to the contact form (contact/), never to an email address.
+# Everywhere else the site uses mailto: links with a plain label (Dahlia 2026-10-09), so the address is never printed on the page.
 ZELLE_ID = "folphs@gmail.com"
 # Contact form backend: accepts a JSON POST and forwards it to the FOLPHS inbox.
 # The inbox address lives in that service, never in this repo or the page source.
 FORM_ENDPOINT = ""
 FORM_KEY = ""
+SPIRIT_WEAR_EMAIL = "sw4lphs@gmail.com"
+MAIL_SUBJECTS = {"legacy-fund": "Legacy Fund check pickup", "sponsorship": "FOLPHS business sponsorship", "volunteer": "Volunteering with FOLPHS", "spirit-wear": "Spirit Wear order"}
 INSTAGRAM = "https://www.instagram.com/lphschicago/"
 FB_PAGE = "https://www.facebook.com/people/Friends-of-Lincoln-Park-High-School/61586578040811/"
 FB_PARENTS_GROUP = "https://www.facebook.com/groups/2832926726795889/"
@@ -57,7 +59,7 @@ NAV = [
     ("Shop", "shop/", None),
     ("Sponsors", None, [("Become a Sponsor", "sponsors/"), ("Our Sponsors", "sponsors/#current")]),
     ("Get Involved", "get-involved/", None),
-    ("Contact", None, ([("Contact Us", "contact/")] if FORM_ENDPOINT else []) + [("Instagram and Groups", "stay-in-touch/"), ("Monthly Meetings", "stay-in-touch/#meetings"), ("Meeting Minutes", "meeting-minutes/")]),
+    ("Contact", None, [("Contact Us", "contact/") if FORM_ENDPOINT else ("Email Us", "mailto:" + ZELLE_ID)] + [("Instagram and Groups", "stay-in-touch/"), ("Monthly Meetings", "stay-in-touch/#meetings"), ("Meeting Minutes", "meeting-minutes/")]),
 ]
 
 IG_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>'
@@ -80,7 +82,9 @@ CONTACT_TOPICS = [
 
 def contact_href(depth, topic=None):
     if not FORM_ENDPOINT:
-        return rel(depth, "stay-in-touch/")  # form not live yet
+        to = SPIRIT_WEAR_EMAIL if topic == "spirit-wear" else ZELLE_ID
+        subject = MAIL_SUBJECTS.get(topic)
+        return f"mailto:{to}" + (f"?subject={subject.replace(' ', '%20')}" if subject else "")
     return rel(depth, "contact/") + (f"?topic={topic}" if topic else "")
 
 def header(depth, current):
@@ -88,7 +92,7 @@ def header(depth, current):
     for label, href, sub in NAV:
         if sub:
             is_cur = bool(current) and any(s[1].split("#")[0] == current for s in sub)
-            subs = "".join(f'<li><a href="{h if h.startswith("http") else rel(depth, h)}">{t}</a></li>' for t, h in sub)
+            subs = "".join(f'<li><a href="{h if h.startswith(("http", "mailto:")) else rel(depth, h)}">{t}</a></li>' for t, h in sub)
             items.append(f'<li><details class="{"current" if is_cur else ""}"><summary>{label}</summary><ul class="sub">{subs}</ul></details></li>')
         else:
             cur = ' aria-current="page"' if current and href == current else ""
@@ -1068,5 +1072,5 @@ if __name__ == "__main__":
     (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' + "".join(entries) + "</urlset>\n")
     (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n")
     if not FORM_ENDPOINT:
-        print("NOTE: FORM_ENDPOINT is empty, so the contact page is not published and contact links go to Stay in Touch.")
+        print("NOTE: FORM_ENDPOINT is empty, so the contact page is not published and contact links are mailto: links.")
     print("built")
