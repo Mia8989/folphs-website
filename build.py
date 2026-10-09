@@ -102,12 +102,12 @@ def header(depth, current):
     return f'''<a class="skip" href="#main">Skip to content</a>
 <div class="topbar"><div class="wrap">
 <a class="brand" href="{rel(depth, '')}" aria-label="Friends of Lincoln Park High School, home"><img class="seal" src="{rel(depth, 'assets/img/lincoln-park-high-school-seal.png')}" alt="Lincoln Park High School seal" width="400" height="400"><img src="{rel(depth, 'assets/img/friends-of-lincoln-park-high-school-logo-white.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="306"></a>
-<div class="util"><a href="{rel(depth, 'events/')}">2026-27 Calendar</a><a href="{rel(depth, 'stay-in-touch/#meetings')}">Meetings</a><a href="{INSTAGRAM}">{IG_SVG}<span>@lphschicago</span></a><a class="util-btn" href="{rel(depth, 'shop/')}">Shop Spirit Wear</a></div>
+<div class="util"><a href="{rel(depth, 'events/')}">2026-27 Calendar</a><a href="{rel(depth, 'stay-in-touch/#meetings')}">Meetings</a><a class="util-ig" href="{INSTAGRAM}" aria-label="FOLPHS on Instagram, @lphschicago">{IG_SVG}<span>@lphschicago</span></a><a class="util-icon" href="{FB_PAGE}" aria-label="FOLPHS on Facebook" title="FOLPHS on Facebook">{FB_SVG}</a><a class="util-btn" href="{rel(depth, 'shop/')}">Shop Spirit Wear</a></div>
 <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
 <a class="btn btn-gold header-cta" href="{donate_href(depth)}">Donate</a>
 </div></div>
 <header class="site-header"><div class="wrap">
-<nav class="nav" id="site-nav" aria-label="Main"><ul>{"".join(items)}</ul></nav>
+<nav class="nav" id="site-nav" aria-label="Main"><ul>{"".join(items)}<li class="nav-social"><a href="{INSTAGRAM}" aria-label="FOLPHS on Instagram" title="FOLPHS on Instagram">{IG_SVG}</a><a href="{FB_PAGE}" aria-label="FOLPHS on Facebook" title="FOLPHS on Facebook">{FB_SVG}</a></li></ul></nav>
 </div></header>'''
 
 def donate_band(depth):
@@ -134,7 +134,8 @@ def footer(depth):
 <div class="cols">
 <div><img class="logo" src="{r('assets/img/friends-of-lincoln-park-high-school-logo-white.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="306">
 <p>A parent-run, volunteer organization supporting every student at Lincoln Park High School in Chicago.</p>
-<address style="font-style:normal;margin:0 0 1em">Friends of Lincoln Park High School (FOLPHS)<br>{ADDRESS_STREET}<br>{ADDRESS_CITY}</address></div>
+<address style="font-style:normal;margin:0 0 1em">Friends of Lincoln Park High School (FOLPHS)<br>{ADDRESS_STREET}<br>{ADDRESS_CITY}</address>
+<div class="foot-social"><a href="{INSTAGRAM}" aria-label="FOLPHS on Instagram" title="FOLPHS on Instagram">{IG_SVG}</a><a href="{FB_PAGE}" aria-label="FOLPHS on Facebook" title="FOLPHS on Facebook">{FB_SVG}</a></div></div>
 <div><h2>Give</h2><ul><li><a href="{donate_href(depth)}">Donate Online</a></li><li><a href="{r('legacy-fund/')}">Lions Legacy Fund</a></li><li><a href="{r('ways-to-give/')}">Ways to Give</a></li><li><a href="{r('sponsors/')}">Become a Sponsor</a></li></ul></div>
 <div><h2>Join Us</h2><ul><li><a href="{r('stay-in-touch/#meetings')}">Monthly Meetings</a></li><li><a href="{r('events/')}">2026-27 Calendar</a></li><li><a href="{r('get-involved/')}">Volunteer</a></li><li><a href="{r('meeting-minutes/')}">Meeting Minutes</a></li></ul></div>
 <div><h2>Follow</h2><ul><li><a href="{INSTAGRAM}">Instagram @lphschicago</a></li><li><a href="{FB_PARENTS_GROUP}">All LPHS Parents group</a></li><li><a href="{r('stay-in-touch/')}">Stay in Touch</a></li><li><a href="{contact_href(depth)}">Contact Us</a></li></ul></div>
