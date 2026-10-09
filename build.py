@@ -442,7 +442,7 @@ def legacy(d):
 
 def about(d):
     # (name, role, photo file in assets/img or None). Add a headshot by dropping it in assets/img and naming it here.
-    board = [("Colin O&rsquo;Brien", "President", "folphs-board-colin-obrien.jpg"), ("Keely Selko", "Vice President", "folphs-board-keely-selko.jpg"), ("Mavia Lozano", "Treasurer", None), ("Roona Shah", "Secretary", "folphs-board-roona-shah.jpg")]
+    board = [("Colin O&rsquo;Brien", "President", "folphs-board-colin-obrien.jpg"), ("Keely Selko", "Vice President", "folphs-board-keely-selko.jpg"), ("Maiva Lozano", "Treasurer", None), ("Roona Shah", "Secretary", "folphs-board-roona-shah.jpg")]
     def photo(n, f):
         if f:
             return f'<img class="headshot" src="{rel(d, "assets/img/" + f)}" alt="{n.replace("&rsquo;", "\'")}" width="200" height="200" loading="lazy">'
