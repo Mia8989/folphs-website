@@ -883,6 +883,8 @@ window.addEventListener('hashchange',fromHash);fromHash();
 def link(d):
     """Instagram link-in-bio page (folphs.org/link). Donate first and largest, then one row per destination."""
     rows = [
+        # Temporary: remove after the Oct 17, 2026 Open House.
+        ("Volunteer at Open House", "Saturday, Oct 17, 1:00 to 4:30 pm. Sign up with the LPHS form", "https://docs.google.com/forms/d/1_K742fhMxBUzsEVnlcDIGqe5RhNQclyt_JF96zPePjA/viewform", True),
         ("Lions Legacy Fund", "What your gift builds this year", rel(d, "legacy-fund/"), False),
         ("2026-27 Calendar", "No-school days, breaks and key LPHS dates", rel(d, "events/"), False),
         ("Coffee with the Principal", "Sign up for a monthly coffee with Dr. Steinmiller", COFFEE_SIGNUP, True),
