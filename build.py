@@ -61,7 +61,7 @@ NAV = [
     ("Shop", "shop/", None),
     ("Sponsors", None, [("Become a Sponsor", "sponsors/"), ("Our Sponsors", "sponsors/#current")]),
     ("Get Involved", "get-involved/", None),
-    ("Contact", None, [("Contact Us", "contact/") if FORM_ENDPOINT else ("Email Us", "mailto:" + ZELLE_ID)] + [("Instagram and Groups", "stay-in-touch/"), ("Monthly Meetings", "stay-in-touch/#meetings"), ("Meeting Minutes", "meeting-minutes/")]),
+    ("Contact", None, [("Contact Us", "contact/")] + [("Instagram and Groups", "stay-in-touch/"), ("Monthly Meetings", "stay-in-touch/#meetings"), ("Meeting Minutes", "meeting-minutes/")]),
 ]
 
 IG_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>'
@@ -943,6 +943,27 @@ def link(d):
  <p class="bio-legal">FOLPHS is a registered 501(c)(3) nonprofit, EIN {EIN}, independent of Lincoln Park High School and Chicago Public Schools.</p>
 </div>'''
 
+def contact_simple(d):
+    rows = "".join(f'<li><a href="{contact_href(d, k)}"><span><b>{label}</b></span><i aria-hidden="true"></i></a></li>' for k, label in CONTACT_TOPICS)
+    return f'''
+<section class="page-hero"><div class="wrap"><span class="eyebrow" style="color:var(--gold-light)">Contact us</span><h1>Questions? A parent volunteer will answer.</h1><p>Pick what your message is about and your email app opens with it addressed to the right volunteer.</p></div></section>
+<section aria-labelledby="topics-title">
+ <div class="wrap split">
+  <div>
+   <h2 id="topics-title">What is your message about?</h2>
+   <ul class="contact-topics">{rows}</ul>
+  </div>
+  <div class="reach">
+   <h2>Other ways to reach us</h2>
+   <dl>
+    <dt>Instagram</dt><dd><a href="{INSTAGRAM}">Message @lphschicago</a></dd>
+    <dt>In person</dt><dd>Come to a meeting: the 2nd Tuesday of every month, 6:00 pm at LPHS. <a href="{rel(d, 'stay-in-touch/#meetings')}">Meeting details</a></dd>
+    <dt>Parent groups</dt><dd><a href="{rel(d, 'stay-in-touch/')}">LPHS parent groups on Facebook</a></dd>
+   </dl>
+  </div>
+ </div>
+</section>'''
+
 def involved(d):
     roles = ["Legacy Fund / fall pledge drive committee", "Grant writing", "Corporate sponsorship", "Volunteer coordinator", "Brick campaign", "Marquee messages", "Board members (usually meet in person once a month)"]
     return f'''
@@ -1105,13 +1126,13 @@ if __name__ == "__main__":
     page("get-involved", "Get Involved | FOLPHS", "Volunteer with Friends of Lincoln Park High School or join the board.", involved, "get-involved/")
     page("shop", "Spirit Wear Shop | FOLPHS", "Shop Lincoln Park High School spirit wear: hoodies, t-shirts, joggers, hats, accessories and gift cards. Every purchase supports LPHS students.", shop, "shop/")
     page("link", "FOLPHS Links | Friends of Lincoln Park High School", "Give to the Lions Legacy Fund, see the 2026-27 calendar, sign up for Coffee with the Principal, sponsor, volunteer and shop spirit wear.", link, bare=True)
-    if FORM_ENDPOINT: page("contact", "Contact Us | FOLPHS", "Send a message to Friends of Lincoln Park High School about giving, business sponsorship, volunteering, spirit wear or meetings.", contact, "contact/")
+    page("contact", "Contact Us | FOLPHS", "Send a message to Friends of Lincoln Park High School about giving, business sponsorship, volunteering, spirit wear or meetings.", contact if FORM_ENDPOINT else contact_simple, "contact/")
     page("past-events", "Past Events | FOLPHS", "Past FOLPHS campaigns and galas, including the 2025 Shine Together annual giving campaign.", past, "past-events/")
     page("", "Page not found | FOLPHS", "Page not found.", NOT_FOUND, out_file="404.html")
     for old, new in REDIRECTS.items():
         if new is not None:
             redirect_stub(old, new)
-    urls = ["", "legacy-fund", "about", "events", "stay-in-touch", "meeting-minutes", "ways-to-give", "sponsors", "get-involved", "past-events", "shop"] + (["contact"] if FORM_ENDPOINT else [])
+    urls = ["", "legacy-fund", "about", "events", "stay-in-touch", "meeting-minutes", "ways-to-give", "sponsors", "get-involved", "past-events", "shop", "contact"]
     def page_images(u):
         html = (ROOT / u / "index.html").read_text() if u else (ROOT / "index.html").read_text()
         return sorted(set(re.findall(r'assets/img/([\w/.-]+\.(?:webp|png|jpg))', html)))
