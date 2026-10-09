@@ -33,7 +33,7 @@ SITE_BASE = "/"
 
 # Online donation link for the Legacy Fund (Keely is creating it).
 # Leave as None until it arrives: buttons then point to the Ways to Give section.
-DONATE_URL = "https://fundraise.givesmart.com/form/eX2F7g?vid=1sqbel"
+DONATE_URL = "https://fundraise.givesmart.com/form/eX2F7g?vid=1stt89"
 
 # --------------------------------------------------------------- helpers
 def rel(depth, path):
@@ -48,7 +48,7 @@ NAV = [
     ("About", None, [("What We Do", "about/"), ("2026-27 Board Members", "about/#board")]),
     ("Events", None, [("2026-27 Calendar", "events/"), ("Coffee with the Principal", "events/#coffee"), ("Attend a Meeting", "stay-in-touch/#meetings")]),
     ("Stay in Touch", None, [("Instagram and Groups", "stay-in-touch/"), ("Monthly Meetings", "stay-in-touch/#meetings"), ("Meeting Minutes", "meeting-minutes/")]),
-    ("Ways to Give", None, [("Lions Legacy Fund", "legacy-fund/#give"), ("Donate by Zelle", "ways-to-give/#zelle"), ("Marquee Messages", "ways-to-give/#marquee"), ("Raise Right Gift Cards", "ways-to-give/#raise-right"), ("Spirit Wear", "ways-to-give/#spirit-wear"), ("Library Wish List", "ways-to-give/#library")]),
+    ("Ways to Give", None, [("Donate Online", DONATE_URL or "legacy-fund/#give"), ("Donate by Zelle", "ways-to-give/#zelle"), ("Donate by Check", "legacy-fund/#check-give"), ("Marquee Messages", "ways-to-give/#marquee"), ("Raise Right Gift Cards", "ways-to-give/#raise-right"), ("Spirit Wear", "ways-to-give/#spirit-wear"), ("Library Wish List", "ways-to-give/#library")]),
     ("Sponsors", None, [("Become a Sponsor", "sponsors/"), ("Our Sponsors", "sponsors/#current")]),
     ("Get Involved", "get-involved/", None),
     ("Past Events", "past-events/", None),
@@ -59,14 +59,15 @@ FB_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path 
 
 def donate_href(depth):
     # Roona: the online link is one way to pay; Zelle and check are listed too.
-    return rel(depth, "legacy-fund/#give")
+    # Dahlia 2026-10-08: one click to the online form; Zelle and check stay one step away.
+    return DONATE_URL or rel(depth, "legacy-fund/#give")
 
 def header(depth, current):
     items = []
     for label, href, sub in NAV:
         if sub:
             is_cur = bool(current) and any(s[1].split("#")[0] == current for s in sub)
-            subs = "".join(f'<li><a href="{rel(depth, h)}">{t}</a></li>' for t, h in sub)
+            subs = "".join(f'<li><a href="{h if h.startswith("http") else rel(depth, h)}">{t}</a></li>' for t, h in sub)
             items.append(f'<li><details class="{"current" if is_cur else ""}"><summary>{label}</summary><ul class="sub">{subs}</ul></details></li>')
         else:
             cur = ' aria-current="page"' if current and href == current else ""
@@ -74,10 +75,29 @@ def header(depth, current):
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="wrap">
 <a class="brand" href="{rel(depth, '')}" aria-label="Friends of Lincoln Park High School, home"><img class="seal" src="{rel(depth, 'assets/img/lincoln-park-high-school-seal.png')}" alt="Lincoln Park High School seal" width="400" height="400"><img src="{rel(depth, 'assets/img/friends-of-lincoln-park-high-school-logo.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="322"></a>
+<a class="btn btn-gold header-donate" href="{donate_href(depth)}">Donate</a>
 <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
 <nav class="nav" id="site-nav" aria-label="Main"><ul>{"".join(items)}</ul>
 <a class="btn btn-gold" href="{donate_href(depth)}">Donate</a></nav>
 </div></header>'''
+
+def donate_band(depth):
+    return f'''<section class="donate-band" aria-labelledby="donate-band-title">
+ <div class="wrap">
+  <div>
+   <span class="eyebrow">2026-27 Lions Legacy Fund</span>
+   <h2 id="donate-band-title">Invest in the Pride.</h2>
+   <p>Your gift funds new Chromebooks, fitness equipment, student scholarships and better spaces for staff and students.</p>
+  </div>
+  <div class="act">
+   <a class="btn btn-navy" href="{donate_href(depth)}">Donate online</a>
+   <p>Prefer Zelle or a check? <a href="{rel(depth, 'legacy-fund/#give')}">See all ways to give</a></p>
+  </div>
+ </div>
+</section>'''
+
+# Pages that already carry their own donate section skip the closing band.
+NO_DONATE_BAND = {"", "legacy-fund", "ways-to-give"}
 
 def footer(depth):
     r = lambda p: rel(depth, p)
@@ -86,7 +106,7 @@ def footer(depth):
 <div><img class="logo" src="{r('assets/img/friends-of-lincoln-park-high-school-logo-white.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="306">
 <p>A parent-run, volunteer organization supporting every student at Lincoln Park High School in Chicago.</p>
 <address style="font-style:normal;margin:0 0 1em">Friends of Lincoln Park High School (FOLPHS)<br>{ADDRESS_STREET}<br>{ADDRESS_CITY}</address></div>
-<div><h2>Give</h2><ul><li><a href="{r('legacy-fund/')}">Lions Legacy Fund</a></li><li><a href="{r('ways-to-give/')}">Ways to Give</a></li><li><a href="{r('sponsors/')}">Become a Sponsor</a></li></ul></div>
+<div><h2>Give</h2><ul><li><a href="{donate_href(depth)}">Donate Online</a></li><li><a href="{r('legacy-fund/')}">Lions Legacy Fund</a></li><li><a href="{r('ways-to-give/')}">Ways to Give</a></li><li><a href="{r('sponsors/')}">Become a Sponsor</a></li></ul></div>
 <div><h2>Join Us</h2><ul><li><a href="{r('stay-in-touch/#meetings')}">Monthly Meetings</a></li><li><a href="{r('events/')}">2026-27 Calendar</a></li><li><a href="{r('get-involved/')}">Volunteer</a></li><li><a href="{r('meeting-minutes/')}">Meeting Minutes</a></li></ul></div>
 <div><h2>Follow</h2><ul><li><a href="{INSTAGRAM}">Instagram @lphschicago</a></li><li><a href="{FB_PARENTS_GROUP}">All LPHS Parents group</a></li><li><a href="{r('stay-in-touch/')}">Stay in Touch</a></li></ul></div>
 </div>
@@ -130,6 +150,7 @@ def page(slug, title, desc, body, current=None, og_img="assets/img/folphs-lions-
 {header(depth, current)}
 <main id="main">
 {body(depth) if callable(body) else body}
+{"" if slug in NO_DONATE_BAND else donate_band(depth)}
 </main>
 {footer(depth)}
 </body></html>'''
@@ -226,6 +247,7 @@ def home(d):
    <h2 id="goals-title">What your gift will build this year</h2>
    <p>Chicago Public Schools funding is always in flux. The Legacy Fund covers what the school budget can&rsquo;t, and it reaches every student.</p>
    <div class="cta-row"><a class="btn btn-gold" href="{donate_href(d)}">Give now</a></div>
+   <p class="alt-give">Or give by <a href="{rel(d, 'legacy-fund/#give')}">Zelle or check</a></p>
   </div>
   {goals_list()}
  </div>
@@ -335,7 +357,7 @@ def legacy(d):
     <p class="note">Add &ldquo;Legacy Fund&rdquo; and your email in the memo.</p>
     <a class="btn btn-ghost" href="{rel(d, 'ways-to-give/#zelle')}">Show the Zelle QR code</a>
    </div>
-   <div class="give">
+   <div class="give" id="check-give">
     <h3>Check</h3>
     <p>We&rsquo;ll personally pick it up! (just contact: <strong>{EMAIL}</strong>)</p>
     <a class="btn btn-ghost" href="mailto:{EMAIL}?subject=Legacy%20Fund%20check%20pickup">Email {EMAIL}</a>
@@ -526,6 +548,7 @@ def give(d):
    <h2 id="lf-title">Give to the Lions Legacy Fund</h2>
    <p>Our 2026-27 annual giving campaign funds new Chromebooks, fitness equipment, student scholarships and better spaces for staff and students.</p>
    <div class="cta-row"><a class="btn btn-gold" href="{donate_href(d)}">Give to the Legacy Fund</a></div>
+   <p class="alt-give">Or give by <a href="{rel(d, 'legacy-fund/#give')}">Zelle or check</a></p>
   </div>
   <div class="figure plain">{img(d, 'lions-legacy-fund-2026-27-header.webp', 'Lions Legacy Fund: invest in a stronger LPHS for generations of Lions', 1280, 281)}</div>
  </div>
@@ -646,9 +669,14 @@ def sponsors(d):
 </section>
 <section class="band-cream" id="current" aria-labelledby="current-title">
  <div class="wrap">
-  <span class="eyebrow">Thank you</span>
-  <h2 id="current-title">Our 2025-26 sponsors</h2>
-  <p>These neighborhood businesses stood with LPHS students last year.</p>
+  <div class="split rev" style="align-items:center">
+   <div>
+    <span class="eyebrow">Thank you</span>
+    <h2 id="current-title">Our 2025-26 sponsors</h2>
+    <p>These neighborhood businesses stood with LPHS students last year. Their logos were featured on our Armitage St. banner, right outside the school.</p>
+   </div>
+   <figure style="margin:0"><div class="figure">{img(d, 'folphs-2025-26-sponsor-banner-armitage.webp', 'The 2025-26 FOLPHS sponsor banner on the Armitage St. fence at Lincoln Park High School, reading Shining a light on our sponsors with eight sponsor logos', 1400, 1050)}</div><figcaption class="caption">Our 2025-26 sponsor banner on Armitage St.</figcaption></figure>
+  </div>
   {"".join(tiers)}
  </div>
 </section>'''

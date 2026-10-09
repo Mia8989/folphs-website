@@ -261,3 +261,26 @@ table.tiers{width:100%;border-collapse:collapse;min-width:720px;background:#fff;
 .people .headshot.seal{object-fit:contain;background:#fff}
 @media (max-width:640px){.brand img{height:40px}.brand img.seal{height:46px}.brand{gap:10px}}
 [id]{scroll-margin-top:96px}
+
+/* Donate: closing band + always-visible mobile button */
+.header-donate{display:none}
+.alt-give{font-size:15px;margin:16px 0 0;color:inherit;opacity:.85}
+.donate-band{background:linear-gradient(90deg,#C9973A,#F1D48A 45%,#C9973A);color:var(--navy);padding:72px 0}
+.donate-band .wrap{display:grid;grid-template-columns:1.4fr .6fr;gap:64px;align-items:center}
+.donate-band .eyebrow{color:var(--navy)}
+.donate-band h2{margin:0 0 12px}
+.donate-band p{margin:0;max-width:34em;color:var(--navy)}
+.donate-band .act{display:flex;flex-direction:column;gap:16px;align-items:flex-start}
+.donate-band .act p{font-size:15px}
+.donate-band .act a:not(.btn){color:var(--navy);font-weight:700}
+@media (max-width:1240px){
+  .header-donate{display:inline-flex;margin-left:auto;padding:12px 18px;font-size:16px}
+  .header-donate+.menu-toggle{margin-left:0}
+  .site-header .wrap{gap:12px}
+  .nav .btn{display:none}
+}
+@media (max-width:860px){
+  .donate-band{padding:56px 0}
+  .donate-band .wrap{grid-template-columns:1fr;gap:32px}
+  .donate-band .act .btn{width:100%;justify-content:center}
+}
