@@ -11,7 +11,13 @@ import json, os, re, pathlib
 ROOT = pathlib.Path(__file__).parent
 
 # ---------------------------------------------------------------- settings
-EMAIL = "folphs@gmail.com"
+# Zelle is registered to this address, so it stays visible ONLY in the Zelle instructions.
+# Everywhere else the site links to the contact form (contact/), never to an email address.
+ZELLE_ID = "folphs@gmail.com"
+# Contact form backend: accepts a JSON POST and forwards it to the FOLPHS inbox.
+# The inbox address lives in that service, never in this repo or the page source.
+FORM_ENDPOINT = ""
+FORM_KEY = ""
 INSTAGRAM = "https://www.instagram.com/lphschicago/"
 FB_PAGE = "https://www.facebook.com/people/Friends-of-Lincoln-Park-High-School/61586578040811/"
 FB_PARENTS_GROUP = "https://www.facebook.com/groups/2832926726795889/"
@@ -46,12 +52,12 @@ def rel(depth, path):
 NAV = [
     ("Legacy Fund", "legacy-fund/", None),
     ("About", None, [("What We Do", "about/"), ("2026-27 Board Members", "about/#board")]),
-    ("Events", None, [("2026-27 Calendar", "events/"), ("Coffee with the Principal", "events/#coffee"), ("Attend a Meeting", "stay-in-touch/#meetings")]),
-    ("Stay in Touch", None, [("Instagram and Groups", "stay-in-touch/"), ("Monthly Meetings", "stay-in-touch/#meetings"), ("Meeting Minutes", "meeting-minutes/")]),
-    ("Ways to Give", None, [("Donate Online", DONATE_URL or "legacy-fund/#give"), ("Donate by Zelle", "ways-to-give/#zelle"), ("Donate by Check", "legacy-fund/#check-give"), ("Marquee Messages", "ways-to-give/#marquee"), ("Raise Right Gift Cards", "ways-to-give/#raise-right"), ("Spirit Wear", "ways-to-give/#spirit-wear"), ("Library Wish List", "ways-to-give/#library")]),
+    ("Events", None, [("2026-27 Calendar", "events/"), ("Coffee with the Principal", "events/#coffee"), ("Attend a Meeting", "stay-in-touch/#meetings"), ("Past Events", "past-events/")]),
+    ("Ways to Give", None, [("Donate Online", DONATE_URL or "legacy-fund/#give"), ("Donate by Zelle", "ways-to-give/#zelle"), ("Donate by Check", "legacy-fund/#check-give"), ("Marquee Messages", "ways-to-give/#marquee"), ("Raise Right Gift Cards", "ways-to-give/#raise-right"), ("Spirit Wear Shop", "shop/"), ("Library Wish List", "ways-to-give/#library")]),
+    ("Shop", "shop/", None),
     ("Sponsors", None, [("Become a Sponsor", "sponsors/"), ("Our Sponsors", "sponsors/#current")]),
     ("Get Involved", "get-involved/", None),
-    ("Past Events", "past-events/", None),
+    ("Contact", None, ([("Contact Us", "contact/")] if FORM_ENDPOINT else []) + [("Instagram and Groups", "stay-in-touch/"), ("Monthly Meetings", "stay-in-touch/#meetings"), ("Meeting Minutes", "meeting-minutes/")]),
 ]
 
 IG_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>'
@@ -61,6 +67,21 @@ def donate_href(depth):
     # Roona: the online link is one way to pay; Zelle and check are listed too.
     # Dahlia 2026-10-08: one click to the online form; Zelle and check stay one step away.
     return DONATE_URL or rel(depth, "legacy-fund/#give")
+
+CONTACT_TOPICS = [
+    ("general", "General question"),
+    ("legacy-fund", "Lions Legacy Fund gift or check pickup"),
+    ("sponsorship", "Business sponsorship"),
+    ("volunteer", "Volunteering and committees"),
+    ("spirit-wear", "Spirit Wear order or pickup"),
+    ("marquee", "Marquee messages"),
+    ("website", "Website feedback"),
+]
+
+def contact_href(depth, topic=None):
+    if not FORM_ENDPOINT:
+        return rel(depth, "stay-in-touch/")  # form not live yet
+    return rel(depth, "contact/") + (f"?topic={topic}" if topic else "")
 
 def header(depth, current):
     items = []
@@ -108,7 +129,7 @@ def footer(depth):
 <address style="font-style:normal;margin:0 0 1em">Friends of Lincoln Park High School (FOLPHS)<br>{ADDRESS_STREET}<br>{ADDRESS_CITY}</address></div>
 <div><h2>Give</h2><ul><li><a href="{donate_href(depth)}">Donate Online</a></li><li><a href="{r('legacy-fund/')}">Lions Legacy Fund</a></li><li><a href="{r('ways-to-give/')}">Ways to Give</a></li><li><a href="{r('sponsors/')}">Become a Sponsor</a></li></ul></div>
 <div><h2>Join Us</h2><ul><li><a href="{r('stay-in-touch/#meetings')}">Monthly Meetings</a></li><li><a href="{r('events/')}">2026-27 Calendar</a></li><li><a href="{r('get-involved/')}">Volunteer</a></li><li><a href="{r('meeting-minutes/')}">Meeting Minutes</a></li></ul></div>
-<div><h2>Follow</h2><ul><li><a href="{INSTAGRAM}">Instagram @lphschicago</a></li><li><a href="{FB_PARENTS_GROUP}">All LPHS Parents group</a></li><li><a href="{r('stay-in-touch/')}">Stay in Touch</a></li></ul></div>
+<div><h2>Follow</h2><ul><li><a href="{INSTAGRAM}">Instagram @lphschicago</a></li><li><a href="{FB_PARENTS_GROUP}">All LPHS Parents group</a></li><li><a href="{r('stay-in-touch/')}">Stay in Touch</a></li><li><a href="{contact_href(depth)}">Contact Us</a></li></ul></div>
 </div>
 <div class="legal"><span>&copy; 2026 FOLPHS, a registered 501(c)(3) nonprofit organization. EIN: {EIN}.</span><span>FOLPHS is independent of Lincoln Park High School and Chicago Public Schools.</span></div>
 </div></footer>
@@ -120,7 +141,7 @@ n.querySelectorAll('a').forEach(function(a){{a.addEventListener('click',function
 }})();
 </script>'''
 
-def page(slug, title, desc, body, current=None, og_img="assets/img/folphs-lions-legacy-fund-share.jpg", out_file=None):
+def page(slug, title, desc, body, current=None, og_img="assets/img/folphs-lions-legacy-fund-share.jpg", out_file=None, bare=False):
     depth = 0 if out_file else slug.count("/") + (1 if slug else 0)
     canonical = f"{SITE_URL}/{slug}".rstrip("/") if slug else SITE_URL
     html = f'''<!doctype html>
@@ -147,12 +168,12 @@ def page(slug, title, desc, body, current=None, og_img="assets/img/folphs-lions-
 <link rel="stylesheet" href="{rel(depth, 'assets/site.css')}">
 <script type="application/ld+json">{json.dumps({"@context":"https://schema.org","@type":"NGO","name":"Friends of Lincoln Park High School","alternateName":"FOLPHS","url":SITE_URL,"logo":SITE_URL+"/assets/img/friends-of-lincoln-park-high-school-logo.png","sameAs":[INSTAGRAM,FB_PAGE],"taxID":EIN,"nonprofitStatus":"Nonprofit501c3","address":{"@type":"PostalAddress","streetAddress":ADDRESS_STREET,"postalCode":"60614","addressLocality":"Chicago","addressRegion":"IL","addressCountry":"US"}})}</script>
 </head><body>
-{header(depth, current)}
+{'' if bare else header(depth, current)}
 <main id="main">
 {body(depth) if callable(body) else body}
-{"" if slug in NO_DONATE_BAND else donate_band(depth)}
+{"" if bare or slug in NO_DONATE_BAND else donate_band(depth)}
 </main>
-{footer(depth)}
+{'' if bare else footer(depth)}
 </body></html>'''
     out = ROOT / out_file if out_file else (ROOT / slug / "index.html" if slug else ROOT / "index.html")
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -260,7 +281,7 @@ def home(d):
    <span class="eyebrow">For local businesses</span>
    <h2 id="sponsor-title">Put your logo in lights on Armitage</h2>
    <p>Sponsor the Legacy Fund and your business shows up on the LPHS digital marquee, the Armitage St. banner, our website and social media, in front of thousands of neighborhood families.</p>
-   <div class="cta-row"><a class="btn btn-navy" href="{rel(d, 'sponsors/')}">See sponsor levels</a><a class="btn btn-ghost" href="mailto:{EMAIL}?subject=Lions%20Legacy%20Fund%20sponsorship">Email us</a></div>
+   <div class="cta-row"><a class="btn btn-navy" href="{rel(d, 'sponsors/')}">See sponsor levels</a><a class="btn btn-ghost" href="{contact_href(d, 'sponsorship')}">Contact us</a></div>
   </div>
  </div>
 </section>
@@ -330,8 +351,8 @@ def legacy(d):
    <p>Since CPS is always in flux, <strong>your investment equals 6% of LPHS&rsquo; budget, and is essential to enriching our experiences!</strong> (See: <a href="{TRIBUNE}">Chicago Tribune</a>.) It&rsquo;s easy to give, here&rsquo;s how:</p>
    <ul class="checks">
     <li><strong>Credit Card:</strong> donate through our <a href="{DONATE_URL}">online link</a> (quick &amp; convenient!)</li>
-    <li><strong>Zelle:</strong> at <a href="{rel(d, 'ways-to-give/#zelle')}">{EMAIL}</a> (lower transaction fees = greater gifts!)</li>
-    <li><strong>Check:</strong> we&rsquo;ll personally pick it up! (just contact: <a href="mailto:{EMAIL}">{EMAIL}</a>)</li>
+    <li><strong>Zelle:</strong> at <a href="{rel(d, 'ways-to-give/#zelle')}">{ZELLE_ID}</a> (lower transaction fees = greater gifts!)</li>
+    <li><strong>Check:</strong> we&rsquo;ll personally pick it up! (just <a href="{contact_href(d, 'legacy-fund')}">send us a message</a>)</li>
    </ul>
    <p>Deepen your connection to our community, demonstrate commitment to education, and know your neighborhood patrons, we hope you&rsquo;ll help.</p>
    <p style="margin-top:32px">In partnership,</p>
@@ -353,14 +374,14 @@ def legacy(d):
    </div>
    <div class="give" id="zelle-give">
     <h3>Zelle</h3>
-    <p>At <strong>{EMAIL}</strong> (lower transaction fees = greater gifts!)</p>
+    <p>At <strong>{ZELLE_ID}</strong> (lower transaction fees = greater gifts!)</p>
     <p class="note">Add &ldquo;Legacy Fund&rdquo; and your email in the memo.</p>
     <a class="btn btn-ghost" href="{rel(d, 'ways-to-give/#zelle')}">Show the Zelle QR code</a>
    </div>
    <div class="give" id="check-give">
     <h3>Check</h3>
-    <p>We&rsquo;ll personally pick it up! (just contact: <strong>{EMAIL}</strong>)</p>
-    <a class="btn btn-ghost" href="mailto:{EMAIL}?subject=Legacy%20Fund%20check%20pickup">Email {EMAIL}</a>
+    <p>We&rsquo;ll personally pick it up! Send us a message and we&rsquo;ll arrange a time.</p>
+    <a class="btn btn-ghost" href="{contact_href(d, 'legacy-fund')}">Arrange a check pickup</a>
    </div>
   </div>
  </div>
@@ -402,7 +423,7 @@ def legacy(d):
   <h2 id="sponsor-title">Join the LPHS Pride as a sponsor</h2>
   <p class="lede">Your financial support is also a unique opportunity to gain goodwill with widespread recognition, within and around our school community.</p>
   {tiers_table()}
-  <div class="cta-row"><a class="btn btn-navy" href="mailto:{EMAIL}?subject=Lions%20Legacy%20Fund%20sponsorship">Email {EMAIL} to sponsor</a></div>
+  <div class="cta-row"><a class="btn btn-navy" href="{contact_href(d, 'sponsorship')}">Contact us to sponsor</a></div>
  </div>
 </section>
 
@@ -440,7 +461,7 @@ def about(d):
   <span class="eyebrow">Officers</span>
   <h2 id="board-title">2026-27 Board Members</h2>
   <ul class="people">{people}</ul>
-  <div class="callout" style="margin-top:48px"><p><strong>Committees:</strong> we always need more hands. Email <a href="mailto:{EMAIL}">{EMAIL}</a> to get involved.</p></div>
+  <div class="callout" style="margin-top:48px"><p><strong>Committees:</strong> we always need more hands. <a href="{contact_href(d, 'volunteer')}">Send us a message</a> to get involved.</p></div>
  </div>
 </section>'''
 
@@ -577,7 +598,7 @@ def give(d):
   <div>
    <span class="eyebrow">No card fees</span>
    <h2 id="zelle-title">Donate or pay by Zelle</h2>
-   <p>Prefer not to use a credit card? We&rsquo;d love that too, since it saves us the 3% fee. Scan the QR code in your banking app or find us at <strong>{EMAIL}</strong>.</p>
+   <p>Prefer not to use a credit card? We&rsquo;d love that too, since it saves us the 3% fee. Scan the QR code in your banking app or find us at <strong>{ZELLE_ID}</strong>.</p>
    <div class="callout"><p>Please add a note in the memo that tells us what you&rsquo;re giving toward (for example Legacy Fund, Marquee or Business Sponsorship) and include your email. We can&rsquo;t contact you otherwise.</p></div>
   </div>
   <div class="figure" style="max-width:420px">{img(d, 'folphs-zelle-donation-qr-code.webp', 'Zelle QR code to pay Friends of Lincoln Park High School', 700, 607)}</div>
@@ -625,8 +646,8 @@ def give(d):
    <h2 id="sw-title">Shop spirit wear</h2>
    <p><strong>Online:</strong> open to anyone, 24/7. Pick up your order in the main building cafeteria on the first Wednesday of every month.</p>
    <p><strong>In person:</strong> open to current LP students, staff and community on the first Wednesday of every month during the school year, September through June, 11:00 am to 2:30 pm in the Main Building Cafeteria. Incoming students can shop on designated days such as Freshman Connection and Quick Start.</p>
-   <p>Need a different pick-up arrangement? Email Spirit Wear lead Leslie at <a href="mailto:sw4lphs@gmail.com">sw4lphs@gmail.com</a> before you order.</p>
-   <div class="cta-row"><a class="btn btn-navy" href="{SPIRIT_STORE}">Shop the online store</a></div>
+   <p>Need a different pick-up arrangement? <a href="{contact_href(d, 'spirit-wear')}">Message Spirit Wear lead Leslie</a> before you order.</p>
+   <div class="cta-row"><a class="btn btn-navy" href="{rel(d, 'shop/')}">Shop spirit wear</a></div>
   </div>
  </div>
 </section>
@@ -662,7 +683,7 @@ def sponsors(d):
   <p class="lede">Partner with FOLPHS to deepen your connection to the community and show your commitment to education and to the Lincoln Park neighborhood. Every level supports the Lions Legacy Fund.</p>
   {tiers_table()}
   <div class="split" style="margin-top:64px">
-   <div><h3>Ready to join the Pride?</h3><p>Email us today and we&rsquo;ll find the right level for your business.</p><div class="cta-row"><a class="btn btn-navy" href="mailto:{EMAIL}?subject=FOLPHS%20business%20sponsorship">Email {EMAIL}</a></div></div>
+   <div><h3>Ready to join the Pride?</h3><p>Send us a message today and we&rsquo;ll find the right level for your business.</p><div class="cta-row"><a class="btn btn-navy" href="{contact_href(d, 'sponsorship')}">Contact us</a></div></div>
    <div class="figure plain">{img(d, 'folphs-2026-27-business-sponsorship-levels.webp', '2026-27 FOLPHS sponsorship chart: Leader of the Pack $5,000+, Member of the Pride $2,000+, Roar of the Lion $1,000+', 1400, 1030)}<p class="caption" style="padding:0 16px 12px">Download-ready chart to share with your team.</p></div>
   </div>
  </div>
@@ -681,6 +702,193 @@ def sponsors(d):
  </div>
 </section>'''
 
+SHOP_ALL = "https://lphsspirit.square.site/s/shop"
+GIFT_CARD = "https://squareup.com/gift/5X93VV5CGS1DF/order"
+_P = "https://lphsspirit.square.site/product/"
+# (sku, name, price, product path). Photos: assets/img/shop/<sku>.webp
+SHOP_ITEMS = [
+ ("Hoodies and sweatshirts", "hoodies", [
+  ("S020", "Medium Grey Hoodie", "$35", "s020-medium-grey-hoodie/W5AXEGPV5P5BQMAUOTBT3HBZ"),
+  ("S021", "Navy Hoodie", "$35", "s021-navy-hoodie/5KT2KXIJLV4CIBDMXEBP7JQT"),
+  ("S019", "Zip Up, Heather Grey Hoodie", "$45", "s019-zip-up-heather-grey-hoodie/642R7GTL4HZLDZ2YMOHDE4TS"),
+  ("S015", "LP Hoodie, Gray", "$35", "s015-lp-hoodie-gray/51"),
+  ("S014", "LP Hoodie, Navy", "$35", "s014-lp-hoodie-navy/50"),
+  ("S011", "Lion/LPHS Hoodie, Navy", "$35", "s011-lion-lphs-hoodie-navy/47"),
+  ("S012", "Lion/LPHS Hoodie, Gray", "$35", "s012-lion-lphs-hoodie-gray/48"),
+  ("S018", "Grey Hoodie", "$35 to $40", "s018-grey-hoodie/61"),
+  ("S006", "Hoodie, Zip Up, Light Gray, LP Logo", "$40", "s006-hoodie-zip-up-light-gray-lp-logo/44"),
+  ("S016", "Lincoln Park/Chicago Skyline Hoodie", "$35", "s016-lincoln-park-chicago-skyline-hoodie/55"),
+  ("S013", "Crewneck Sweatshirt, Lincoln Park High School, Navy", "$30", "s013-crewneck-sweatshirt-lincoln-park-high-school-navy/49"),
+  ("S023", "Crewneck Arabic", "$60", "s023-crewneck-arabic/V257X2R2SX5D4KPFM5AUKIUS"),
+  ("S022", "Crewneck Mandarin", "$60", "s022-crewneck-mandarin/Q74RNYEVYHQ33MSUTWUYP24L"),
+  ("S002", "Cropped Gray LPHS Hoodie", "$19", "s002-cropped-gray-lphs-hoodie/40"),
+  ("S003", "Cropped White Lincoln Park Hoodie", "$16", "s003-cropped-white-lincoln-park-hoodie/25"),
+ ]),
+ ("T-shirts", "t-shirts", [
+  ("T012", "Navy T-Shirt", "$18", "t012-navy-t-shirt/VVYREZOIZAA4JG4EMXLYBPVO"),
+  ("T015", "Navy LP Logo T-Shirt", "$18", "t015-navy-lp-logo-t-shirt/JH4NCB3HKMFEGDSCGM7LVXGK"),
+  ("T017", "Navy LPHS T-Shirt", "$18", "t017-navy-lphs-t-shirt/NLYJGCTTJ7LEKVW2DXAVT7DM"),
+  ("T016", "Grey LP Gold Logo", "$18", "t016-grey-lp-gold-logo/I3UTDH36JYRXCOH73ISJY5KR"),
+  ("T014", "Grey T-Shirt", "$18", "t014-grey-t-shirt/5SRO553KWYKO7MPZPQB2QJ3B"),
+  ("T018", "LPHS Logo T-Shirt", "$18", "t018-lphs-logo-t-shirt/O5GDRZFEEWPR4HDI7TZRXBHU"),
+  ("T013", "White T-Shirt", "$18", "t013-white-t-shirt/4RY237E4HYRNGUZF2YFR5IXY"),
+  ("T020", "LPHS Mandarin", "$18", "t020-lphs-mandarin/OMBIVCXMEDUI7MEYXFH55TNY"),
+  ("T019", "Military Green", "$18", "t019-military-green/5U4SKHICQISBVYLYRWQNHDTO"),
+  ("T002", "Cropped White T-Shirt", "$18", "t002-cropped-white-t-shirt/29"),
+ ]),
+ ("Joggers, shorts and PJs", "bottoms", [
+  ("B004", "Jogger, Light Gray LP Logo", "$35", "b004-jogger-light-gray-lp-logo/42"),
+  ("B002", "Jogger, Darker Gray", "$20", "b002-jogger-darker-gray/30"),
+  ("B003", "Jogger, Navy", "$20", "b003-jogger-navy/36"),
+  ("B007", "Shorts &ldquo;LPHS&rdquo;", "$18", "b007-shorts-lphs-/31"),
+  ("B005", "Shorts, Basketball Navy", "$18", "b005-shorts-basketball-navy/32"),
+  ("B006", "Shorts, Flannel PJ", "$30", "b006-shorts-flannel-pj/33"),
+  ("B008", "Flannel Blue/Gold PJ Bottoms with White Lincoln Park Logo", "$20", "b008-flannel-blue-gold-pj-bottoms-with-white-lincoln-park-logo/7"),
+  ("B001", "Flannel PJ Bottoms, White Lincoln Park Logo", "$35", "b001-flannel-pj-bottoms-white-lincoln-park-logo/41"),
+ ]),
+ ("Hats and accessories", "accessories", [
+  ("U017", "Trucker Hat", "$24", "u017-trucker-hat/59"),
+  ("U001", "Navy LP Baseball Hat, Snap Back", "$22", "u001-navy-lp-baseball-hat-snap-back/45"),
+  ("U002", "White LP Baseball Hat, Velcro Back", "$22", "u002-white-lp-baseball-hat-velcro-back/46"),
+  ("U010", "Pom Pom Hat, Striped", "$18", "u010-pom-pom-hat-striped/11"),
+  ("U009", "Pom Pom Hat, Navy", "$18", "u009-pom-pom-hat-navy/10"),
+  ("U007", "Fleece Ear Band, Navy", "$5", "u007-fleece-ear-band-navy/15"),
+  ("U006", "Water Bottle", "$12", "u006-water-bottle/8"),
+  ("U014", "Water Bottle, White LP Logo", "$10", "u014-water-bottle-white-lp-logo/56"),
+  ("U012", "FOLPHS Community Cookbook", "$10", "u012-folphs-community-cookbook/20"),
+  ("U004", "Car Magnet, LP Logo", "$5", "u004-car-magnet-lp-logo/39"),
+  ("U013", "LPHS Phone Wallet", "$5", "u013-lphs-phone-wallet/35"),
+  ("U008", "LPHS Keychain", "$5", "u008-lphs-keychain/24"),
+  ("U020", "Class of 2029", "$5", "u020-class-of-2029-/YD67XYXKTJFTKUEQD4KN2H5N"),
+  ("U015", "Tote Bag, White LP Crest", "$2", "u015-tote-bag-white-lp-crest/57"),
+  ("U016", "Pen Lion Pride", "$1", "u016-pen-lion-pride/58"),
+  ("U019", "Lion Pride Pen", "$1", "u019-lion-pride-pen/LQYQML7CWPBJIELYTHESRBIA"),
+ ]),
+]
+# products without their own photo borrow the closest one until a photo is supplied
+SHOP_PHOTO = {"S018": "s012", "S023": "s022"}
+
+def shop(d):
+    def card(sku, name, price, path):
+        ph = SHOP_PHOTO.get(sku, sku.lower())
+        plain = name.replace("&ldquo;", "").replace("&rdquo;", "")
+        return (f'<li><a class="product" href="{_P}{path}" target="_blank" rel="noopener" aria-label="{plain}, {price}, opens the store in a new tab">'
+                f'<span class="ph">{img(d, f"shop/{ph}.webp", plain, 640, 640)}</span>'
+                f'<span class="meta"><span class="sku">{sku}</span><span class="name">{name}</span><span class="price">{price}</span></span></a></li>')
+    jump = "".join(f'<a href="#{slug}">{title}</a>' for title, slug, _ in SHOP_ITEMS)
+    sections = "".join(f'''
+<section class="shop-cat{" band-cream" if i % 2 else ""}" id="{slug}" aria-labelledby="{slug}-title">
+ <div class="wrap">
+  <div class="shop-cat-head"><h2 id="{slug}-title">{title}</h2><span class="count">{len(items)} items</span></div>
+  <ul class="products">{"".join(card(*it) for it in items)}</ul>
+ </div>
+</section>''' for i, (title, slug, items) in enumerate(SHOP_ITEMS))
+    return f'''
+<section class="page-hero shop-hero on-navy"><div class="wrap">
+ <div>
+  <span class="eyebrow" style="color:var(--gold-light)">LPHS Spirit Wear shop</span>
+  <h1>Wear the Pride.</h1>
+  <p>Hoodies, tees, joggers, hats and gifts in navy and gold. Every purchase supports Lincoln Park High School students.</p>
+  <div class="cta-row"><a class="btn btn-gold" href="{SHOP_ALL}" target="_blank" rel="noopener">Shop all</a><a class="btn btn-ghost" href="#gift-card">Send a gift card</a></div>
+ </div>
+ <div class="shop-stack" aria-hidden="true">
+  {img(d, "shop/s021.webp", "", 640, 640, lazy=False)}{img(d, "shop/u010.webp", "", 640, 640, lazy=False)}{img(d, "shop/u002.webp", "", 640, 640, lazy=False)}
+ </div>
+</div></section>
+<nav class="shop-jump" aria-label="Shop categories"><div class="wrap"><a href="#gift-card">Gift card</a>{jump}</div></nav>
+
+<section id="gift-card" aria-labelledby="gift-title">
+ <div class="wrap split">
+  <div>
+   <span class="eyebrow">Not sure of the size?</span>
+   <h2 id="gift-title">Give a Spirit Wear gift card</h2>
+   <p>Let your Lion pick. Gift cards are sent by email and work on everything in the online store.</p>
+   <div class="cta-row"><a class="btn btn-navy" href="{GIFT_CARD}" target="_blank" rel="noopener">Buy a gift card</a></div>
+  </div>
+  <a class="gift-card" href="{GIFT_CARD}" target="_blank" rel="noopener" aria-label="Buy a Spirit Wear gift card, opens in a new tab">
+   <span class="eyebrow">LPHS Spirit Wear</span><span class="gc-title">Gift Card</span>{img(d, "lincoln-park-high-school-seal.png", "", 400, 400)}
+  </a>
+ </div>
+</section>
+{sections}
+<section aria-labelledby="pickup-title">
+ <div class="wrap split">
+  <div>
+   <span class="eyebrow">How it works</span>
+   <h2 id="pickup-title">Order online, pick up at school</h2>
+  </div>
+  <div>
+   <p><strong>Online:</strong> open to anyone, 24/7. Pick up your order in the main building cafeteria on the first Wednesday of every month.</p>
+   <p><strong>In person:</strong> open to current LP students, staff and community on the first Wednesday of every month during the school year, September through June, 11:00 am to 2:30 pm in the Main Building Cafeteria.</p>
+   <p>Need a different pick-up arrangement? <a href="{contact_href(d, 'spirit-wear')}">Send the Spirit Wear team a message</a> before you order.</p>
+   <div class="cta-row"><a class="btn btn-navy" href="{SHOP_ALL}" target="_blank" rel="noopener">Shop all</a><a class="btn btn-ghost" href="{contact_href(d, 'spirit-wear')}">Ask a question</a></div>
+  </div>
+ </div>
+</section>'''
+
+def link(d):
+    """Instagram link-in-bio page (folphs.org/link). Donate first and largest, then one row per destination."""
+    rows = [
+        ("Lions Legacy Fund", "What your gift builds this year", rel(d, "legacy-fund/"), False),
+        ("2026-27 Calendar", "No-school days, breaks and key LPHS dates", rel(d, "events/"), False),
+        ("Coffee with the Principal", "Sign up for a monthly coffee with Dr. Steinmiller", COFFEE_SIGNUP, True),
+        ("Business Sponsors", "Put your logo in lights on Armitage", rel(d, "sponsors/"), False),
+        ("Get Involved", "Volunteer, join a committee or come to a meeting", rel(d, "get-involved/"), False),
+    ]
+    items = "".join(f'<li><a href="{h}"{" target=\"_blank\" rel=\"noopener\"" if ext else ""}><span><b>{t}</b><small>{s}</small></span><i aria-hidden="true"></i></a></li>' for t, s, h, ext in rows)
+    row = lambda t, h, ext=True: f'<li><a href="{h}"{" target=\"_blank\" rel=\"noopener\"" if ext else ""}><span><b>{t}</b></span><i aria-hidden="true"></i></a></li>'
+    # carried over from the old @lphschicago Linktree so the bio link can move here
+    more = "".join([
+        row("Monthly meetings: 2nd Tuesday, 6 pm", rel(d, "stay-in-touch/#meetings"), False),
+        row("Marquee message, $50", MARQUEE_BUY),
+        row("More ways to give", rel(d, "ways-to-give/"), False),
+        row("LPHS Business Directory", "https://a9f93cb2-97b5-455c-bedf-003c11b070e9.filesusr.com/ugd/bfdcdc_0de52ca964f24feca14ed477790d7482.pdf"),
+        row("Register your business", "https://docs.google.com/forms/d/e/1FAIpQLSfsvql2f97FX41NIi2ri1sVarEFPgDHYLzzKHYiO0YAtiZgIg/viewform"),
+        row("Custom spirit wear, shipped to your home", "https://apparelnow.com/the-lions-den-gear"),
+    ])
+    school = "".join([
+        row("Lincoln Park High School website", "https://www.lincolnparkhs.org/"),
+        row("Enrollment", "https://www.lincolnparkhs.org/apps/pages/index.jsp?uREC_ID=924953&amp;type=d&amp;pREC_ID=2110116"),
+        row("LPHS Clubs", "https://docs.google.com/spreadsheets/d/1B-eRRv2t5BBhPhdrkTJAcCzAB1ADWG8az45QPP_1HRo/edit"),
+        row("LP Teams", "https://lincolnparkhs.edlioschool.com/apps/departments/index.jsp?show=ATH"),
+        row("BOP", "https://www.lphsbop.com/"),
+    ])
+    thumbs = "".join(img(d, f"shop/{k}.webp", "", 640, 640, lazy=False) for k in ("s021", "u001", "t015", "u010"))
+    return f'''
+<div class="bio">
+ <header class="bio-head">
+  <img class="seal" src="{rel(d, 'assets/img/lincoln-park-high-school-seal.png')}" alt="Lincoln Park High School seal" width="400" height="400">
+  <img class="logo" src="{rel(d, 'assets/img/friends-of-lincoln-park-high-school-logo-white.png')}" alt="FOLPHS, Friends of Lincoln Park High School" width="900" height="306">
+  <p>Parents and neighbors, working for every LPHS student.</p>
+ </header>
+
+ <section class="bio-give" aria-labelledby="bio-give-title">
+  <span class="eyebrow">2026-27 Lions Legacy Fund</span>
+  <h1 id="bio-give-title">Invest in the Pride.</h1>
+  <p>Chromebooks, fitness equipment, scholarships and better spaces for every Lincoln Park High School student.</p>
+  <a class="bio-donate" href="{DONATE_URL}">Donate now</a>
+  <p class="alt">Or <a href="{rel(d, 'ways-to-give/#zelle')}">give by Zelle</a>, or <a href="{contact_href(d, 'legacy-fund')}">ask us to pick up a check</a>.</p>
+ </section>
+
+ <nav aria-label="FOLPHS links"><ul class="bio-links">{items}</ul></nav>
+
+ <a class="bio-shop" href="{rel(d, 'shop/')}">
+  <span class="eyebrow">Spirit Wear shop</span>
+  <b>Wear the Pride.</b>
+  <span class="thumbs">{thumbs}</span>
+  <span class="go">Shop hoodies, tees and hats</span>
+ </a>
+
+ <h2 class="bio-h">More from FOLPHS</h2>
+ <ul class="bio-links sm">{more}</ul>
+ <h2 class="bio-h">Lincoln Park High School links</h2>
+ <ul class="bio-links sm">{school}</ul>
+ <ul class="bio-more">
+  <li><a href="{rel(d, '')}">Visit folphs.org</a></li>
+ </ul>
+ <p class="bio-legal">FOLPHS is a registered 501(c)(3) nonprofit, EIN {EIN}, independent of Lincoln Park High School and Chicago Public Schools.</p>
+</div>'''
+
 def involved(d):
     roles = ["Legacy Fund / fall pledge drive committee", "Grant writing", "Corporate sponsorship", "Volunteer coordinator", "Brick campaign", "Marquee messages", "Board members (usually meet in person once a month)"]
     return f'''
@@ -694,8 +902,8 @@ def involved(d):
   </div>
   <div class="letter" style="padding:40px">
    <h3>Interested? Questions?</h3>
-   <p>Fill out our volunteer interest form or email us. We look forward to meeting and working with you.</p>
-   <div class="cta-row"><a class="btn btn-navy" href="{VOLUNTEER_FORM}">Volunteer interest form</a><a class="btn btn-ghost" href="mailto:{EMAIL}?subject=Volunteering%20with%20FOLPHS">Email us</a></div>
+   <p>Fill out our volunteer interest form or send us a message. We look forward to meeting and working with you.</p>
+   <div class="cta-row"><a class="btn btn-navy" href="{VOLUNTEER_FORM}">Volunteer interest form</a><a class="btn btn-ghost" href="{contact_href(d, 'volunteer')}">Contact us</a></div>
   </div>
  </div>
 </section>
@@ -743,6 +951,70 @@ def past(d):
 </section>
 '''
 
+CONTACT_JS = """
+(function(){
+var f=document.getElementById('contact-form');if(!f)return;
+var t=new URLSearchParams(location.search).get('topic'),sel=f.elements.topic;
+if(t){for(var i=0;i<sel.options.length;i++){if(sel.options[i].value===t)sel.selectedIndex=i}}
+var st=document.getElementById('form-status'),btn=f.querySelector('button[type=submit]'),done=document.getElementById('form-done');
+f.addEventListener('submit',function(e){
+ e.preventDefault();
+ if(f.elements.botcheck.checked)return;
+ if(!f.reportValidity())return;
+ var label=sel.options[sel.selectedIndex].text;
+ var body={name:f.elements.name.value.trim(),email:f.elements.email.value.trim(),topic:label,subject:'FOLPHS website: '+label,from_name:'FOLPHS website',message:f.elements.message.value.trim()};
+ var k=f.getAttribute('data-key');if(k)body.access_key=k;
+ btn.disabled=true;btn.textContent='Sending...';st.textContent='';st.className='form-status';
+ fetch(f.action,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body)})
+ .then(function(r){if(!r.ok)throw new Error(r.status);
+  f.hidden=true;done.hidden=false;done.focus();
+  if(window.gtag)gtag('event','generate_lead',{form_topic:sel.value});})
+ .catch(function(){btn.disabled=false;btn.textContent='Send message';
+  st.className='form-status err';st.textContent='Sorry, your message did not send. Please try again in a minute, or message us on Instagram @lphschicago.';});
+});
+})();
+"""
+
+def contact(d):
+    opts = "".join(f'<option value="{v}">{t}</option>' for v, t in CONTACT_TOPICS)
+    return f'''
+<section class="page-hero"><div class="wrap"><span class="eyebrow" style="color:var(--gold-light)">Contact us</span><h1>Questions? A parent volunteer will answer.</h1><p>Ask about giving, sponsoring, volunteering or anything else about FOLPHS. We reply within a few days.</p></div></section>
+<section aria-labelledby="form-title">
+ <div class="wrap split contact-split">
+  <div>
+   <h2 id="form-title">Send us a message</h2>
+   <form id="contact-form" class="contact-form" action="{FORM_ENDPOINT}" method="post" data-key="{FORM_KEY}">
+    <div class="field"><label for="cf-topic">What is this about?</label><select id="cf-topic" name="topic">{opts}</select></div>
+    <div class="field-row">
+     <div class="field"><label for="cf-name">Your name</label><input id="cf-name" name="name" type="text" autocomplete="name" required></div>
+     <div class="field"><label for="cf-email">Your email</label><input id="cf-email" name="email" type="email" autocomplete="email" required></div>
+    </div>
+    <div class="field"><label for="cf-message">Message</label><textarea id="cf-message" name="message" rows="6" required></textarea></div>
+    <div class="hp" aria-hidden="true"><label>Leave this box empty <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label></div>
+    <button class="btn btn-navy" type="submit">Send message</button>
+    <p class="note form-note">We only use your email to reply to you.</p>
+    <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+   </form>
+   <div id="form-done" class="form-done" tabindex="-1" hidden>
+    <span class="eyebrow">Message sent</span>
+    <h3>Thank you. We&rsquo;ve got it.</h3>
+    <p>A FOLPHS volunteer will reply to the email you gave us, usually within a few days.</p>
+    <a class="btn btn-ghost" href="{rel(d, '')}">Back to home</a>
+   </div>
+  </div>
+  <aside class="reach" aria-labelledby="reach-title">
+   <h2 id="reach-title">Other ways to reach us</h2>
+   <dl>
+    <dt>In person</dt><dd>Come to a meeting: 2nd Tuesday of every month, 6:00 pm at LPHS. <a href="{rel(d, 'stay-in-touch/#meetings')}">Meeting details</a></dd>
+    <dt>Instagram</dt><dd><a href="{INSTAGRAM}">@lphschicago</a></dd>
+    <dt>Volunteering</dt><dd><a href="{VOLUNTEER_FORM}">Volunteer interest form</a></dd>
+    <dt>By mail</dt><dd>Friends of Lincoln Park High School<br>{ADDRESS_STREET}<br>{ADDRESS_CITY}</dd>
+   </dl>
+  </aside>
+ </div>
+</section>
+<script>{CONTACT_JS}</script>'''
+
 NOT_FOUND = lambda d: f'''<section class="page-hero"><div class="wrap"><span class="eyebrow" style="color:var(--gold-light)">Page not found</span><h1>This page moved</h1><p>We refreshed the FOLPHS website. Try the links below.</p><div class="cta-row"><a class="btn btn-gold" href="./">Home</a><a class="btn btn-ghost" href="legacy-fund/">Lions Legacy Fund</a></div></div></section>'''
 
 # Old Wix URLs -> new pages (keeps shared links working)
@@ -752,7 +1024,7 @@ REDIRECTS = {
     "social-media": "stay-in-touch/", "meetings": "stay-in-touch/#meetings", "marquee-messages": "ways-to-give/#marquee",
     "pay-by-zelle": "ways-to-give/#zelle", "ways-to-donate": "ways-to-give/", "ways-to-donate/purchase-gift-card-through-raise-right": "ways-to-give/#raise-right",
     "how-does-raise-right-work": "ways-to-give/#raise-right", "ways-to-donate/purchase-a-book-for-the-library": "ways-to-give/#library",
-    "shop-spirit-wear": "ways-to-give/#spirit-wear", "business-sponsors": "sponsors/", "business-sponsors/current-sponsors": "sponsors/#current",
+    "shop-spirit-wear": "shop/", "business-sponsors": "sponsors/", "business-sponsors/current-sponsors": "sponsors/#current",
     "business-sponsors/become-a-sponsor": "sponsors/", "volunteer": "get-involved/", "volunteer/join-us": "get-involved/",
     "volunteer/current-volunteer-opportunities": "get-involved/", "copy-of-2026-fundraising-gala": "past-events/#gala-2026",
     "copy-of-2026-fundraising-gala-1": "past-events/#gala-2026", "copy-of-marquee-messages": "past-events/#gala-2026",
@@ -777,12 +1049,15 @@ if __name__ == "__main__":
     page("ways-to-give", "Ways to Give | FOLPHS", "Support Lincoln Park High School: Lions Legacy Fund, Zelle, marquee messages, Raise Right gift cards, spirit wear and the library wish list.", give, "ways-to-give/")
     page("sponsors", "Business Sponsors | FOLPHS", "Become a 2026-27 FOLPHS business sponsor: your logo on the LPHS Armitage St. marquee, banner, website and social media.", sponsors, "sponsors/")
     page("get-involved", "Get Involved | FOLPHS", "Volunteer with Friends of Lincoln Park High School or join the board.", involved, "get-involved/")
+    page("shop", "Spirit Wear Shop | FOLPHS", "Shop Lincoln Park High School spirit wear: hoodies, t-shirts, joggers, hats, accessories and gift cards. Every purchase supports LPHS students.", shop, "shop/")
+    page("link", "FOLPHS Links | Friends of Lincoln Park High School", "Give to the Lions Legacy Fund, see the 2026-27 calendar, sign up for Coffee with the Principal, sponsor, volunteer and shop spirit wear.", link, bare=True)
+    if FORM_ENDPOINT: page("contact", "Contact Us | FOLPHS", "Send a message to Friends of Lincoln Park High School about giving, business sponsorship, volunteering, spirit wear or meetings.", contact, "contact/")
     page("past-events", "Past Events | FOLPHS", "Past FOLPHS campaigns and galas, including the 2025 Shine Together annual giving campaign.", past, "past-events/")
     page("", "Page not found | FOLPHS", "Page not found.", NOT_FOUND, out_file="404.html")
     for old, new in REDIRECTS.items():
         if new is not None:
             redirect_stub(old, new)
-    urls = ["", "legacy-fund", "about", "events", "stay-in-touch", "meeting-minutes", "ways-to-give", "sponsors", "get-involved", "past-events"]
+    urls = ["", "legacy-fund", "about", "events", "stay-in-touch", "meeting-minutes", "ways-to-give", "sponsors", "get-involved", "past-events", "shop"] + (["contact"] if FORM_ENDPOINT else [])
     def page_images(u):
         html = (ROOT / u / "index.html").read_text() if u else (ROOT / "index.html").read_text()
         return sorted(set(re.findall(r'assets/img/([\w/.-]+\.(?:webp|png|jpg))', html)))
@@ -792,4 +1067,6 @@ if __name__ == "__main__":
         entries.append(f"<url><loc>{SITE_URL}/{u}</loc>{imgs}</url>")
     (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' + "".join(entries) + "</urlset>\n")
     (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n")
+    if not FORM_ENDPOINT:
+        print("NOTE: FORM_ENDPOINT is empty, so the contact page is not published and contact links go to Stay in Touch.")
     print("built")
