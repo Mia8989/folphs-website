@@ -11,7 +11,7 @@ import json, os, re, pathlib
 ROOT = pathlib.Path(__file__).parent
 
 # ---------------------------------------------------------------- settings
-# Zelle is registered to this address, so it stays visible ONLY in the Zelle instructions.
+# FOLPHS inbox. Zelle was removed from the site 2026-10-13 (not working); giving = online link or check.
 # Everywhere else the site uses mailto: links with a plain label (Dahlia 2026-10-09), so the address is never printed on the page.
 ZELLE_ID = "folphs@gmail.com"
 # Contact form backend: accepts a JSON POST and forwards it to the FOLPHS inbox.
@@ -57,7 +57,7 @@ NAV = [
     ("Legacy Fund", "legacy-fund/", None),
     ("About", None, [("What We Do", "about/"), ("2026-27 Board Members", "about/#board")]),
     ("Events", None, [("2026-27 Calendar", "events/"), ("Coffee with the Principal", "events/#coffee"), ("Attend a Meeting", "stay-in-touch/#meetings"), ("Past Events", "past-events/")]),
-    ("Ways to Give", None, [("Donate Online", DONATE_URL or "legacy-fund/#give"), ("Donate by Zelle", "ways-to-give/#zelle"), ("Donate by Check", "legacy-fund/#check-give"), ("Marquee Messages", "ways-to-give/#marquee"), ("Raise Right Gift Cards", "ways-to-give/#raise-right"), ("Spirit Wear Shop", "shop/"), ("Library Wish List", "ways-to-give/#library")]),
+    ("Ways to Give", None, [("Donate Online", DONATE_URL or "legacy-fund/#give"), ("Donate by Check", "legacy-fund/#check-give"), ("Marquee Messages", "ways-to-give/#marquee"), ("Raise Right Gift Cards", "ways-to-give/#raise-right"), ("Spirit Wear Shop", "shop/"), ("Library Wish List", "ways-to-give/#library")]),
     ("Shop", "shop/", None),
     ("Sponsors", None, [("Become a Sponsor", "sponsors/"), ("Our Sponsors", "sponsors/#current")]),
     ("Get Involved", "get-involved/", None),
@@ -68,8 +68,8 @@ IG_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-widt
 FB_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5H16l.5-3h-3V8.6c0-.9.3-1.6 1.6-1.6h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.3H8v3h2.5V21h3z"/></svg>'
 
 def donate_href(depth):
-    # Roona: the online link is one way to pay; Zelle and check are listed too.
-    # Dahlia 2026-10-08: one click to the online form; Zelle and check stay one step away.
+    # Dahlia 2026-10-08: one click to the online form; check stays one step away.
+    # Dahlia 2026-10-13: Zelle removed, giving is the online link or a check only.
     return DONATE_URL or rel(depth, "legacy-fund/#give")
 
 CONTACT_TOPICS = [
@@ -120,7 +120,7 @@ def donate_band(depth):
   </div>
   <div class="act">
    <a class="btn btn-navy" href="{donate_href(depth)}">Donate online</a>
-   <p>Prefer Zelle or a check? <a href="{rel(depth, 'legacy-fund/#give')}">See all ways to give</a></p>
+   <p>Prefer to give by check? <a href="{rel(depth, 'legacy-fund/#give')}">See how</a></p>
   </div>
  </div>
 </section>'''
@@ -280,7 +280,7 @@ def home(d):
    <h2 id="goals-title">What your gift will build this year</h2>
    <p>Chicago Public Schools funding is always in flux. The Legacy Fund covers what the school budget can&rsquo;t, and it reaches every student.</p>
    <div class="cta-row"><a class="btn btn-gold" href="{donate_href(d)}">Give now</a></div>
-   <p class="alt-give">Or give by <a href="{rel(d, 'legacy-fund/#give')}">Zelle or check</a></p>
+   <p class="alt-give">Or give by <a href="{rel(d, 'legacy-fund/#give')}">check</a></p>
   </div>
   {goals_list()}
  </div>
@@ -363,7 +363,6 @@ def legacy(d):
    <p>Since CPS is always in flux, <strong>your investment equals 6% of LPHS&rsquo; budget, and is essential to enriching our experiences!</strong> (See: <a href="{TRIBUNE}">Chicago Tribune</a>.) It&rsquo;s easy to give, here&rsquo;s how:</p>
    <ul class="checks">
     <li><strong>Credit Card:</strong> donate through our <a href="{DONATE_URL}">online link</a> (quick &amp; convenient!)</li>
-    <li><strong>Zelle:</strong> at <a href="{rel(d, 'ways-to-give/#zelle')}">{ZELLE_ID}</a> (lower transaction fees = greater gifts!)</li>
     <li><strong>Check:</strong> we&rsquo;ll personally pick it up! (just <a href="{contact_href(d, 'legacy-fund')}">send us a message</a>)</li>
    </ul>
    <p>Deepen your connection to our community, demonstrate commitment to education, and know your neighborhood patrons, we hope you&rsquo;ll help.</p>
@@ -377,18 +376,12 @@ def legacy(d):
 <section class="band-cream" id="give" aria-labelledby="give-title">
  <div class="wrap">
   <span class="eyebrow">It&rsquo;s easy to give</span>
-  <h2 id="give-title">Three ways to give</h2>
+  <h2 id="give-title">Two ways to give</h2>
   <div class="give-grid">
    <div class="give feature">
     <h3>Credit Card</h3>
     <p>Donate through our online link (quick &amp; convenient!)</p>
-    {f'<a class="btn btn-gold" href="{DONATE_URL}">Donate online</a>' if DONATE_URL else '<p class="note">Our online giving page opens with the campaign kickoff. Check back soon, or give by Zelle or check today.</p>'}
-   </div>
-   <div class="give" id="zelle-give">
-    <h3>Zelle</h3>
-    <p>At <strong>{ZELLE_ID}</strong> (lower transaction fees = greater gifts!)</p>
-    <p class="note">Add &ldquo;Legacy Fund&rdquo; and your email in the memo.</p>
-    <a class="btn btn-ghost" href="{rel(d, 'ways-to-give/#zelle')}">Show the Zelle QR code</a>
+    {f'<a class="btn btn-gold" href="{DONATE_URL}">Donate online</a>' if DONATE_URL else '<p class="note">Our online giving page opens with the campaign kickoff. Check back soon, or give by check today.</p>'}
    </div>
    <div class="give" id="check-give">
     <h3>Check</h3>
@@ -581,7 +574,7 @@ def give(d):
    <h2 id="lf-title">Give to the Lions Legacy Fund</h2>
    <p>Our 2026-27 annual giving campaign funds new Chromebooks, fitness equipment, student scholarships and better spaces for staff and students.</p>
    <div class="cta-row"><a class="btn btn-gold" href="{donate_href(d)}">Give to the Legacy Fund</a></div>
-   <p class="alt-give">Or give by <a href="{rel(d, 'legacy-fund/#give')}">Zelle or check</a></p>
+   <p class="alt-give">Or give by <a href="{rel(d, 'legacy-fund/#give')}">check</a></p>
   </div>
   <div class="figure plain">{img(d, 'lions-legacy-fund-2026-27-header.webp', 'Lions Legacy Fund: invest in a stronger LPHS for generations of Lions', 1280, 281)}</div>
  </div>
@@ -603,17 +596,6 @@ def give(d):
    </ul>
    <p>We&rsquo;re counting on your support to fund these needs and keep LPHS&rsquo; culture of excellence going.</p>
   </div>
- </div>
-</section>
-<section id="zelle" aria-labelledby="zelle-title">
- <div class="wrap split">
-  <div>
-   <span class="eyebrow">No card fees</span>
-   <h2 id="zelle-title">Donate or pay by Zelle</h2>
-   <p>Prefer not to use a credit card? We&rsquo;d love that too, since it saves us the 3% fee. Scan the QR code in your banking app or find us at <strong>{ZELLE_ID}</strong>.</p>
-   <div class="callout"><p>Please add a note in the memo that tells us what you&rsquo;re giving toward (for example Legacy Fund, Marquee or Business Sponsorship) and include your email. We can&rsquo;t contact you otherwise.</p></div>
-  </div>
-  <div class="figure" style="max-width:420px">{img(d, 'folphs-zelle-donation-qr-code.webp', 'Zelle QR code to pay Friends of Lincoln Park High School', 700, 607)}</div>
  </div>
 </section>
 <section class="band-cream" id="marquee" aria-labelledby="marquee-title">
@@ -925,7 +907,7 @@ def link(d):
   <h1 id="bio-give-title">Invest in the Pride.</h1>
   <p>Chromebooks, fitness equipment, scholarships and better spaces for every Lincoln Park High School student.</p>
   <a class="bio-donate" href="{DONATE_URL}">Donate now</a>
-  <p class="alt">Or <a href="{rel(d, 'ways-to-give/#zelle')}">give by Zelle</a>, or <a href="{contact_href(d, 'legacy-fund')}">ask us to pick up a check</a>.</p>
+  <p class="alt">Or <a href="{contact_href(d, 'legacy-fund')}">ask us to pick up a check</a>.</p>
  </section>
 
  <nav aria-label="FOLPHS links"><ul class="bio-links">{items}</ul></nav>
@@ -1101,7 +1083,7 @@ REDIRECTS = {
     "about": None, "meet-our-board": "about/#board", "what-s-new": "", "upcoming-events": "events/",
     "upcoming-events/2025-26-calendar": "events/", "upcoming-events/monthly-coffee": "events/#coffee",
     "social-media": "stay-in-touch/", "meetings": "stay-in-touch/#meetings", "marquee-messages": "ways-to-give/#marquee",
-    "pay-by-zelle": "ways-to-give/#zelle", "ways-to-donate": "ways-to-give/", "ways-to-donate/purchase-gift-card-through-raise-right": "ways-to-give/#raise-right",
+    "pay-by-zelle": "ways-to-give/", "ways-to-donate": "ways-to-give/", "ways-to-donate/purchase-gift-card-through-raise-right": "ways-to-give/#raise-right",
     "how-does-raise-right-work": "ways-to-give/#raise-right", "ways-to-donate/purchase-a-book-for-the-library": "ways-to-give/#library",
     "shop-spirit-wear": "shop/", "business-sponsors": "sponsors/", "business-sponsors/current-sponsors": "sponsors/#current",
     "business-sponsors/become-a-sponsor": "sponsors/", "volunteer": "get-involved/", "volunteer/join-us": "get-involved/",
@@ -1125,7 +1107,7 @@ if __name__ == "__main__":
     page("events", "2026-27 Calendar and Coffee with the Principal | FOLPHS", "Key 2026-27 Lincoln Park High School dates, FOLPHS events and the monthly Coffee with the Principal signup.", events, "events/")
     page("stay-in-touch", "Stay in Touch and Monthly Meetings | FOLPHS", "Follow FOLPHS on Instagram, join LPHS parent groups and attend FOLPHS meetings on the 2nd Tuesday of every month at 6 pm.", stay, "stay-in-touch/")
     page("meeting-minutes", "Meeting Minutes | FOLPHS", "Minutes from Friends of Lincoln Park High School meetings, open to the public.", minutes, "meeting-minutes/")
-    page("ways-to-give", "Ways to Give | FOLPHS", "Support Lincoln Park High School: Lions Legacy Fund, Zelle, marquee messages, Raise Right gift cards, spirit wear and the library wish list.", give, "ways-to-give/")
+    page("ways-to-give", "Ways to Give | FOLPHS", "Support Lincoln Park High School: Lions Legacy Fund, marquee messages, Raise Right gift cards, spirit wear and the library wish list.", give, "ways-to-give/")
     page("sponsors", "Business Sponsors | FOLPHS", "Become a 2026-27 FOLPHS business sponsor: your logo on the LPHS Armitage St. marquee, banner, website and social media.", sponsors, "sponsors/")
     page("get-involved", "Get Involved | FOLPHS", "Volunteer with Friends of Lincoln Park High School or join the board.", involved, "get-involved/")
     page("shop", "Spirit Wear Shop | FOLPHS", "Shop Lincoln Park High School spirit wear: hoodies, t-shirts, joggers, hats, accessories and gift cards. Every purchase supports LPHS students.", shop, "shop/")

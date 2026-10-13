@@ -115,7 +115,7 @@ section{padding:112px 0}
 .band-navy .checks li::before{border-color:var(--gold)}
 
 /* Give options */
-.give-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:24px;margin-top:48px}
+.give-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;margin-top:48px}
 .give{background:#fff;border:1px solid var(--line);border-radius:var(--r-l);padding:32px;display:flex;flex-direction:column;gap:8px}
 .give.feature{background:var(--navy);color:#fff;border:0}
 .give.feature h3{color:#fff}
