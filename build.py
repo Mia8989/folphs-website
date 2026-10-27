@@ -333,7 +333,7 @@ def legacy(d):
 <section class="legacy-hero on-navy" aria-labelledby="hero-title">
  <div class="wrap grid">
   <div class="copy">
-   <span class="status-pill">Kicking off soon</span>
+   <span class="status-pill">Donate now!</span>
    <h1 id="hero-title" class="wordmark">Lions <span class="gold">Legacy</span><span class="fund">Fund</span></h1>
    <p class="tag">Invest in a stronger LPHS for generations of Lions.</p>
    <p>The Lions Legacy Fund is the 2026-27 annual giving campaign from Friends of Lincoln Park High School. It runs through the end of December.</p>
