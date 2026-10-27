@@ -12,8 +12,8 @@
   --wrap:1160px;
 }
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font:400 18px/1.65 var(--sans);overflow-x:hidden}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:hidden;overflow-x:clip}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 18px/1.65 var(--sans);overflow-x:hidden;overflow-x:clip;position:relative}
 img{max-width:100%;height:auto;display:block}
 a{color:var(--navy-3);text-underline-offset:3px;text-decoration-thickness:1px}
 a:hover{color:var(--navy)}
@@ -69,7 +69,7 @@ section{padding:112px 0}
 .gold-rule{height:6px;background:linear-gradient(90deg,#C9973A,#F1D48A 45%,#C9973A)}
 
 /* Legacy hero */
-.legacy-hero{background:var(--navy);color:#fff;padding:96px 0 0;position:relative;overflow:visible}
+.legacy-hero{background:var(--navy);color:#fff;padding:96px 0 0;position:relative;overflow:visible;overflow-x:clip}
 .legacy-hero .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:64px;align-items:end}
 .legacy-hero .copy{padding-bottom:104px}
 .wordmark{font-family:var(--serif);font-weight:900;line-height:.92;letter-spacing:-.03em;margin:0 0 24px;color:#fff;font-size:clamp(56px,8.4vw,112px)}
