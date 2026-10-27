@@ -249,7 +249,7 @@ def home(d):
     <a class="btn btn-ghost" href="{rel(d, 'legacy-fund/')}">See what we&rsquo;re funding</a>
    </div>
   </div>
-  <a class="flyer-card" href="{rel(d, 'legacy-fund/')}" aria-label="Lions Legacy Fund campaign flyer">{img(d, 'lions-legacy-fund-2026-27-flyer.webp', 'Lions Legacy Fund flyer: Invest in the Pride, 2026-27 goals are new Chromebooks, health and fitness, student scholarships and staff spaces', 1000, 1470, lazy=False)}</a>
+  <a class="flyer-card" href="{rel(d, 'legacy-fund/')}" aria-label="Lions Legacy Fund campaign flyer">{img(d, 'lions-legacy-fund-2026-27-flyer.webp?v=2', 'Lions Legacy Fund flyer: Invest in the Pride, 2026-27 goals are new Chromebooks, health and fitness, student scholarships and staff spaces', 1000, 1470, lazy=False)}</a>
  </div>
 </section>
 <div class="gold-band"><div class="wrap"><span>Invest in a stronger LPHS for generations of Lions</span></div></div>
@@ -339,7 +339,7 @@ def legacy(d):
    <p>The Lions Legacy Fund is the 2026-27 annual giving campaign from Friends of Lincoln Park High School. It runs through the end of December.</p>
    <div class="cta-row"><a class="btn btn-gold" href="{donate_href(d)}">Give now</a><a class="btn btn-ghost" href="#sponsor">Sponsor as a business</a></div>
   </div>
-  <div class="flyer-card">{img(d, 'lions-legacy-fund-2026-27-flyer.webp', 'Lions Legacy Fund flyer: Invest in the Pride, 2026-27 goals are new Chromebooks, health and fitness, student scholarships and staff spaces', 1000, 1470, lazy=False)}</div>
+  <div class="flyer-card">{img(d, 'lions-legacy-fund-2026-27-flyer.webp?v=2', 'Lions Legacy Fund flyer: Invest in the Pride, 2026-27 goals are new Chromebooks, health and fitness, student scholarships and staff spaces', 1000, 1470, lazy=False)}</div>
  </div>
 </section>
 <div class="gold-band"><div class="wrap"><span>A stronger LPHS for generations of Lions</span></div></div>
