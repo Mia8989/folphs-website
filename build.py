@@ -365,7 +365,7 @@ def legacy(d):
    <ul class="checks">
     <li><strong>Credit Card:</strong> donate through our <a href="{DONATE_URL}">online link</a> (quick &amp; convenient!)</li>
     <li><strong>Zelle:</strong> at <a href="#zelle-give">{ZELLE_ID}</a> (lower transaction fees = greater gifts!)</li>
-    <li><strong>Check:</strong> we&rsquo;ll personally pick it up! (just <a href="{contact_href(d, 'legacy-fund')}">send us a message</a>)</li>
+    <li><strong>Check:</strong> we&rsquo;ll personally pick it up! (just <a href="{contact_href(d, 'legacy-fund')}">send us a message</a>) Or mail to Friends of Lincoln Park High School, 2001 N. Orchard St., Chicago, IL 60614</li>
    </ul>
    <p>Deepen your connection to our community, demonstrate commitment to education, and know your neighborhood patrons, we hope you&rsquo;ll help.</p>
    <p style="margin-top:32px">In partnership,</p>
@@ -393,6 +393,7 @@ def legacy(d):
    <div class="give" id="check-give">
     <h3>Check</h3>
     <p>We&rsquo;ll personally pick it up! Send us a message and we&rsquo;ll arrange a time.</p>
+    <p>Or mail to:<br><strong>Friends of Lincoln Park High School</strong><br>2001 N. Orchard St., Chicago, IL 60614</p>
     <a class="btn btn-ghost" href="{contact_href(d, 'legacy-fund')}">Arrange a check pickup</a>
    </div>
   </div>
